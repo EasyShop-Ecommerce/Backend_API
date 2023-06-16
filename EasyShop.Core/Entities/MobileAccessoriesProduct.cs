@@ -1,4 +1,6 @@
-﻿namespace EasyShop.Core.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EasyShop.Core.Entities
 {
 	public class MobileAccessoriesProduct : Product
 	{
@@ -13,5 +15,12 @@
 		public string EmbellishmentFeature { get; set; }
 
 		public string SpecialFeatures { get; set; }
-    }
+
+		[ForeignKey("Section")]
+		public int SectionId { get; set; }
+		public Section Section { get; set; }
+
+		public ICollection<Review> Reviews { get; set; }
+
+	}
 }

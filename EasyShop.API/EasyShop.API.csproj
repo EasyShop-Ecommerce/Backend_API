@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EasyShop.Core\EasyShop.Core.csproj" />
     <ProjectReference Include="..\EasyShop.Infrastructure\EasyShop.Infrastructure.csproj" />
   </ItemGroup>
 

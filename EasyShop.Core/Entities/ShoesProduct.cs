@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyShop.Core.Entities
 {
-	public class ShoesProduct : Product
+	public class ShoesProduct :Product
 	{
 		public int Id { get; set; }
 		[Required]
@@ -18,5 +19,12 @@ namespace EasyShop.Core.Entities
 		public string BootsHeight { get; set; }
 
 		public string Gender { get; set;}
+
+		[ForeignKey("Section")]
+		public int SectionId { get; set; }
+		public Section Section { get; set; }
+
+		public ICollection<Review> Reviews { get; set; }
+
 	}
 }
