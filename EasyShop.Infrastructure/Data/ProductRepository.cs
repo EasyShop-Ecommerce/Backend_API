@@ -1,5 +1,6 @@
 ﻿using EasyShop.Core.Entities;
 using EasyShop.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,29 @@ namespace EasyShop.Infrastructure.Data
 {
 	public class ProductRepository : IProductRepository
 	{
-		public Task<IReadOnlyList<Product>> GetAll()
-		{
-			throw new NotImplementedException();
+		private readonly StoreContext Context;
+
+        public ProductRepository(StoreContext _Context)
+        {
+				Context=_Context;
+        }
+
+		public async Task<IReadOnlyList<Product>> GetAll()
+		{			
+			return await Context.Products.ToListAsync();
 		}
 
-		public Task<Product> GetProductById(int id)
+		public async Task<Product> GetProductById(int id)
 		{
-			throw new NotImplementedException();
+			return await Context.Products.SingleOrDefaultAsync(p => p.Id == id);
 		}
+
+		public async Task<int> AddProduct(Product product)
+		{
+			await Context.Products.AddAsync(product);
+			int row=Context.SaveChanges();
+			return row;
+		}
+
 	}
 }

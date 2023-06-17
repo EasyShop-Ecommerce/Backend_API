@@ -11,7 +11,10 @@ namespace EasyShop.Core.Interfaces
 	{
 		//Methods Signature that deals with product
 
+		Task<IReadOnlyList<Product>> GetAll();
+
 		Task<Product> GetProductById(int id);	
-		Task<IReadOnlyList<Product>> GetAll();	
+
+		Task<int> AddProduct(Product product);
 	}
 }

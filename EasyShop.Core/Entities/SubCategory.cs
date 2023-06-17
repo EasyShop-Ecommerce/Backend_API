@@ -11,7 +11,7 @@ namespace EasyShop.Core.Entities
 		public int CategoryId { get; set; }
 		public Category Category { get; set; }
 
-		public ICollection<Section> Sections { get; set; }
+		public ICollection<Section> Sections { get; set; }=new List<Section>();
 	}
 
 }

@@ -6,4 +6,14 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Entities\BagsProduct.cs" />
+    <Compile Remove="Entities\ClothingProduct.cs" />
+    <Compile Remove="Entities\LaptopsProduct.cs" />
+    <Compile Remove="Entities\MobileAccessoriesProduct.cs" />
+    <Compile Remove="Entities\ServersProduct.cs" />
+    <Compile Remove="Entities\ShoesProduct.cs" />
+    <Compile Remove="Entities\SmartphonesProduct.cs" />
+  </ItemGroup>
+
 </Project>
