@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EasyShop.Core/Entities/ClothingProduct.cs
+/EasyShop.Core/Entities/BagsProduct.cs
+/EasyShop.Core/Entities/LaptopsProduct.cs
+/EasyShop.Core/Entities/MobileAccessoriesProduct.cs
+/EasyShop.Core/Entities/ServersProduct.cs
+/EasyShop.Core/Entities/ShoesProduct.cs
+/EasyShop.Core/Entities/SmartphonesProduct.cs
