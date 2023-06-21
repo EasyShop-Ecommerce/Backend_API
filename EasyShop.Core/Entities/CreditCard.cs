@@ -14,7 +14,7 @@ namespace EasyShop.Core.Entities
 		[ForeignKey("Customer")]
 		[Required]
 		public int CustomerId { get; set; }
-		public Customer Customer { get; set; } = default!;
+		public virtual Customer Customer { get; set; } = default!;
 	}
 
 }

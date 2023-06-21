@@ -9,7 +9,6 @@ namespace EasyShop.Core.Entities
 		[Required]
 		public string CategoryName { get; set; } = string.Empty;
 
-		public ICollection<SubCategory> SubCategories { get; set; }= new List<SubCategory>();
-
+		public virtual ICollection<SubCategory> SubCategories { get; set; }= new List<SubCategory>();
 	}
 }

@@ -6,6 +6,6 @@
 
 		public string Location { get; set; }
 
-		public ICollection<StoreProduct> StoreProducts { get; set; } = new List<StoreProduct>();
+		public virtual ICollection<StoreProduct> StoreProducts { get; set; } = new List<StoreProduct>();
 	}
 }

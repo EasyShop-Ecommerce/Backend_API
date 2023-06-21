@@ -22,7 +22,9 @@ namespace EasyShop.API
 			});
 
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
-			var app = builder.Build();
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>) );
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())

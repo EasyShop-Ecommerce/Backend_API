@@ -9,15 +9,15 @@ namespace EasyShop.Core.Entities
 
 		[ForeignKey("Product")]
 		public int ProductId { get; set; }
-		public Product Product { get; set; }
+		public virtual Product Product { get; set; }
 
 		[ForeignKey("Seller")]
 		public int SellerId { get; set; }
-		public Seller Seller { get; set; }
+		public virtual Seller Seller { get; set; }
 
 		[ForeignKey("Store")]
 		public int StoreId { get; set; }
-		public Store Store { get; set; }
+		public virtual Store Store { get; set; }
 	}
 
 }

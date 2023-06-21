@@ -14,9 +14,9 @@
 		public string City { get; set; } = string.Empty;
 		public string Governorate { get; set; } = string.Empty;
 
-		public ICollection<Product> Products { get; set; }
-		public ICollection<StoreProduct> StoreProducts { get; set; }
-		public ICollection<Order> Orders { get;set; }
+		public virtual ICollection<Product> Products { get; set; }
+		public virtual ICollection<StoreProduct> StoreProducts { get; set; }
+		public virtual ICollection<Order> Orders { get;set; }
 	}
 
 }

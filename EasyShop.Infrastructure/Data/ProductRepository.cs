@@ -18,21 +18,78 @@ namespace EasyShop.Infrastructure.Data
 				Context=_Context;
         }
 
-		public async Task<IReadOnlyList<Product>> GetAll()
+		public async Task<IReadOnlyList<Product>> GetAllProducts()
 		{			
-			return await Context.Products.ToListAsync();
+			return await Context.Products.Include(p => p.Section).ToListAsync();
 		}
 
 		public async Task<Product> GetProductById(int id)
 		{
-			return await Context.Products.SingleOrDefaultAsync(p => p.Id == id);
+			return await Context.Products.Include(p=>p.Section).SingleOrDefaultAsync(p => p.Id == id);
 		}
 
 		public async Task<int> AddProduct(Product product)
 		{
 			await Context.Products.AddAsync(product);
-			int row=Context.SaveChanges();
-			return row;
+			int rowsAffected = Context.SaveChanges();
+			return rowsAffected;
+		}
+	
+		public async Task<int> UpdateProduct(int id, Product product)
+		{
+			Product oldProduct = await Context.Products.SingleOrDefaultAsync(p => p.Id == id);
+			if (oldProduct != null)
+			{
+				oldProduct.Code = product.Code;
+				oldProduct.Title = product.Title;
+				oldProduct.BrandName = product.BrandName;
+				oldProduct.Description = product.Description;
+				oldProduct.Price = product.Price;
+				oldProduct.SectionId = product.SectionId;
+				try
+				{
+					int rowsAffected = await Context.SaveChangesAsync();
+					return rowsAffected;
+				}
+				catch (DbUpdateException ex)
+				{
+					throw;
+				}
+			}
+			else
+			{
+				return -1; 
+			}
+		}
+		
+		public async Task<int> DeleteProduct(int id)
+		{
+			try
+			{
+				if (id <= 0)
+				{
+					throw new ArgumentException("Invalid product ID.");
+				}
+
+				Product productToDelete = await Context.Products.SingleOrDefaultAsync(p => p.Id == id);
+
+				if (productToDelete == null)
+				{
+					throw new ArgumentException("Product not found.");
+				}
+
+				Context.Products.Remove(productToDelete);
+				int row = await Context.SaveChangesAsync();
+
+				Console.WriteLine($"Deleted {row} row(s) from the database.");
+
+				return row;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"An error occurred while deleting the product: {ex.Message}");
+				throw;
+			}
 		}
 
 	}
