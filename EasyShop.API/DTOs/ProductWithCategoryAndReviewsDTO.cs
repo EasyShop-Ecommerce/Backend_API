@@ -2,7 +2,7 @@
 
 namespace EasyShop.API.DTOs
 {
-    public class ProductDTO
+    public class ProductWithCategoryAndReviewsDTO
     {
         public int Id { get; set; }
 
@@ -16,7 +16,14 @@ namespace EasyShop.API.DTOs
 
         public string Description { get; set; }
 
-        public string Section { get; set; }
+        public string SubCategory { get; set; }
+
+        public string Category{ get; set; }
+
+        public int ReviewsCount { get; set; }
+
+        public double ReviewsAverage { get; set; }
+
 
     }
 }

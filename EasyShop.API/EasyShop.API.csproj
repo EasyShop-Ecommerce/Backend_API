@@ -24,4 +24,10 @@
     <ProjectReference Include="..\EasyShop.Infrastructure\EasyShop.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\Category\" />
+    <Folder Include="wwwroot\Uploads\SubCategory\" />
+    <Folder Include="wwwroot\Uploads\Product\" />
+  </ItemGroup>
+
 </Project>

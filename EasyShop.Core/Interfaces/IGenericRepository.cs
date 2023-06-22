@@ -16,5 +16,11 @@ namespace EasyShop.Core.Interfaces
         Task<T> GetEntityWithSpec(ISpecification<T> spec);
 
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+
+        Task<T> AddAsync(T entity);
+
+        Task<int> UpdateAsync(int id,T entity);
+
+        Task DeleteAsync(T entity);
     }
 }

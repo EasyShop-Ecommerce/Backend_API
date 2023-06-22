@@ -16,7 +16,9 @@ namespace EasyShop.Core.Interfaces
 
 		Task<int> AddProduct(Product product);
 
-		Task<int> UpdateProduct(int id,Product product);
+        Task<bool> SubCategoryExists(int subCategoryId);
+
+        Task<int> UpdateProduct(int id,Product product);
 
 		Task<int> DeleteProduct(int id);
 	}

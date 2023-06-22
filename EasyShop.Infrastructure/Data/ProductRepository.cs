@@ -20,49 +20,77 @@ namespace EasyShop.Infrastructure.Data
 
 		public async Task<IReadOnlyList<Product>> GetAllProducts()
 		{			
-			return await Context.Products.Include(p => p.Section).ToListAsync();
+			return await Context.Products
+				                .Include(p => p.SubCategory)
+								.ThenInclude(p => p.Category)
+								.Include(p=>p.Reviews)
+				                .ToListAsync();
 		}
 
 		public async Task<Product> GetProductById(int id)
 		{
-			return await Context.Products.Include(p=>p.Section).SingleOrDefaultAsync(p => p.Id == id);
+			return await Context.Products
+				.Include(p=>p.SubCategory)
+				.SingleOrDefaultAsync(p => p.Id == id);
 		}
 
-		public async Task<int> AddProduct(Product product)
+        public async Task<bool> SubCategoryExists(int subCategoryId)
+        {
+            return await Context.SubCategories.AnyAsync(s => s.Id == subCategoryId);
+        }
+
+        public async Task<int> AddProduct(Product product)
 		{
 			await Context.Products.AddAsync(product);
 			int rowsAffected = Context.SaveChanges();
 			return rowsAffected;
 		}
 	
-		public async Task<int> UpdateProduct(int id, Product product)
-		{
-			Product oldProduct = await Context.Products.SingleOrDefaultAsync(p => p.Id == id);
-			if (oldProduct != null)
-			{
-				oldProduct.Code = product.Code;
-				oldProduct.Title = product.Title;
-				oldProduct.BrandName = product.BrandName;
-				oldProduct.Description = product.Description;
-				oldProduct.Price = product.Price;
-				oldProduct.SectionId = product.SectionId;
-				try
-				{
-					int rowsAffected = await Context.SaveChangesAsync();
-					return rowsAffected;
-				}
-				catch (DbUpdateException ex)
-				{
-					throw;
-				}
-			}
-			else
-			{
-				return -1; 
-			}
-		}
-		
-		public async Task<int> DeleteProduct(int id)
+		//public async Task<int> UpdateProduct(int id, Product product)
+		//{
+		//	Product oldProduct = await Context.Products.SingleOrDefaultAsync(p => p.Id == id);
+		//	if (oldProduct != null)
+		//	{
+		//		oldProduct.Title = product.Title;
+		//		oldProduct.BrandName = product.BrandName;
+		//		oldProduct.Description = product.Description;
+		//		oldProduct.Price = product.Price;
+		//		oldProduct.SubCategoryId = product.SubCategoryId;
+		//		try
+		//		{
+		//			int rowsAffected = await Context.SaveChangesAsync();
+		//			return rowsAffected;
+		//		}
+		//		catch (DbUpdateException ex)
+		//		{
+		//			throw;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		return -1; 
+		//	}
+		//}
+
+
+        public async Task<int> UpdateProduct(int id, Product product)
+        {
+            var entry = Context.Entry(product);
+            entry.State = EntityState.Modified;
+
+            try
+            {
+                int rowsAffected = await Context.SaveChangesAsync();
+                return rowsAffected;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw;
+            }
+        }
+
+
+        public async Task<int> DeleteProduct(int id)
 		{
 			try
 			{
@@ -92,5 +120,5 @@ namespace EasyShop.Infrastructure.Data
 			}
 		}
 
-	}
+    }
 }

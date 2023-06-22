@@ -1,4 +1,5 @@
-﻿using EasyShop.Core.Interfaces;
+﻿using EasyShop.Core.Entities;
+using EasyShop.Core.Interfaces;
 using EasyShop.Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -42,6 +43,64 @@ namespace EasyShop.Infrastructure.Data
         private IQueryable<T> ApplySpecification(ISpecification<T>spec)
         {
             return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), spec);  
+        }
+
+        public async Task<T> AddAsync(T entity)
+        {
+            try
+            {
+                context.Set<T>().Add(entity);
+                await context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while adding the entity.", ex);
+            }
+        }
+
+        //public async Task UpdateAsync(T entity)
+        //{
+        //    try
+        //    {
+        //        context.Set<T>().Attach(entity);
+        //        context.Entry(entity).State = EntityState.Modified;
+        //        await context.SaveChangesAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("An error occurred while updating the entity.", ex);
+        //    }
+        //}
+
+
+        public async Task<int> UpdateAsync(int id, T entity)
+        {
+            var entry = context.Entry(entity);
+            entry.State = EntityState.Modified;
+
+            try
+            {
+                int rowsAffected = await context.SaveChangesAsync();
+                return rowsAffected;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("An error occurred while updating the entity.", ex);
+            }
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            try
+            {
+                context.Set<T>().Remove(entity);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting the entity.", ex);
+            }
         }
     }
 }

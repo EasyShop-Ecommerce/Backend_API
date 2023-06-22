@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyShop.Core.Entities
 {
 	public class Review
 	{
-		
+		[Range(1,5)]
 		public int Rate { get; set; }
 
 		public string Comment { get; set; }
