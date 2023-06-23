@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace EasyShop.Infrastructure.Data
 {
-	public class StoreContext:DbContext
+	public class DBContext:DbContext
 	{
 
-		public StoreContext(DbContextOptions<StoreContext> options) : base(options)
+		public DBContext(DbContextOptions<DBContext> options) : base(options)
 		{
 		}
 
@@ -56,7 +56,7 @@ namespace EasyShop.Infrastructure.Data
 						.HasKey(r => new { r.ProductId, r.CustomerId });
 
 			modelBuilder.Entity<OrderDetail>()
-					    .HasKey(o => new { o.OrderId, o.ProductId });
+						.HasKey(o => new { o.OrderId, o.ProductId });
 
 			modelBuilder.Entity<StoreProduct>()
 					    .HasKey(s => new { s.ProductId, s.SellerId, s.StoreId });

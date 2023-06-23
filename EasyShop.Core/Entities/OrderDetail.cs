@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyShop.Core.Entities
 {
 	public class OrderDetail
 	{
-
+		[Required]
 		public decimal UnitPrice { get; set; }
-
+		[Required]
 		public int Quantity { get; set; }
 
 		[ForeignKey("Order")]

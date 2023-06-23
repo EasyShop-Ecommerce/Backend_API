@@ -1,11 +1,15 @@
-﻿namespace EasyShop.Core.Entities
+﻿using EasyShop.Core.Enums;
+using System.ComponentModel.DataAnnotations;
+
+namespace EasyShop.Core.Entities
 {
 	public class Status
 	{
 		public int Id { get; set; }
 
-		public string StatusName { get; set; } = string.Empty;
+		[Required]
+		public string StatusName { get; set; }
 
-		public ICollection<Order> Orders { get; set; }
+		public ICollection<Order> Orders { get; set; } = new List<Order>();
 	}
 }

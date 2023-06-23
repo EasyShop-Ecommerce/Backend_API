@@ -1,3 +1,4 @@
+using EasyShop.Core.Entities;
 using EasyShop.Core.Interfaces;
 using EasyShop.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +17,16 @@ namespace EasyShop.API
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
-			builder.Services.AddDbContext<StoreContext>(options =>
+			builder.Services.AddDbContext<DBContext>(options =>
 			{
 				options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
-			builder.Services.AddScoped<IProductRepository, ProductRepository>();
-			var app = builder.Build();
+			
+            builder.Services.AddScoped(typeof (IGenericRepository<>), typeof(GenericRepository<>));
+			builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
