@@ -2,6 +2,7 @@
 using EasyShop.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyShop.API.Controllers
 {
@@ -9,17 +10,85 @@ namespace EasyShop.API.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly IGenericRepository<Review> reviewRepo;
+        private readonly IReviewRepository reviewRepository;
 
-        public ReviewController(IGenericRepository<Review> _reviewRepo)
+        public ReviewController(IReviewRepository _reviewRepository)
         {
-            reviewRepo = _reviewRepo;
+            reviewRepository = _reviewRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Review>>> GetAllReviews() 
+        public async Task<IActionResult> GetAllReviews()
         {
-            return Ok(await reviewRepo.GetAllAsync());
+            var reviews = await reviewRepository.GetAll();
+            return Ok(reviews);
+        }
+
+        //get by id needs productid, customer id (edit)
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetReviewById(int id)
+        //{
+        //    var review = await reviewRepository.GetByIdAsync(id);
+        //    if (review == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(review);
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> AddReview(Review review)
+        {
+            try
+            {
+                await reviewRepository.AddAsync(review);
+                return Created("Review Added Successfully",review);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateReview( Review review)
+        {
+            try
+            {
+                await reviewRepository.UpdateAsync(review);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteReview(Review review)
+        {           
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await reviewRepository.DeleteAsync(review);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("/reviews/product/{productId}")]
+        public async Task<IActionResult> GetReviewsForProduct(int productId)
+        {
+            var reviews = await reviewRepository.GetReviewsForProduct(productId);
+            return Ok(reviews);
         }
     }
 }
