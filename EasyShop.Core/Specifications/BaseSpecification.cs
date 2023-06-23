@@ -8,19 +8,21 @@ using System.Threading.Tasks;
 
 namespace EasyShop.Core.Specifications
 {
-    public class BaseSpecification<T> : ISpecification<T>
+    public class BaseSpecification<T>:ISpecification<T>
     {
         public BaseSpecification() { }
-       public BaseSpecification(Expression<Func<T, bool>> criteria)
+       
+        public BaseSpecification(Expression<Func<T,bool>> _criteria)
         {
-            Criteria = criteria;
+            Criteria = _criteria;
         }
+
         public Expression<Func<T, bool>> Criteria { get; }
 
         public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
-        
+
         protected void AddIncludes(Expression<Func<T, object>> includeExpression)
-        { 
+        {
             Includes.Add(includeExpression);
         }
     }

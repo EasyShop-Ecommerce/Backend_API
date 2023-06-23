@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace EasyShop.Core.Interfaces
 {
-	public interface IGenericRepository<T>
-	{
+    public interface IGenericRepository<T>
+    {
 		//Methods Signature that deals with all classes
 
-		Task<IReadOnlyList<T>> GetAllAsync();
+        Task<IReadOnlyList<T>> GetAllAsync();
 
-	    Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsync(int id1,int id2);
 
         Task<T> GetEntityWithSpec(ISpecification<T> spec);
@@ -29,5 +29,6 @@ namespace EasyShop.Core.Interfaces
         Task<T> DeleteAsync(int Id);
         Task<T> DeleteAsync(int Id1, int Id2);
 
+        Task DeleteAsync(T entity);
     }
 }

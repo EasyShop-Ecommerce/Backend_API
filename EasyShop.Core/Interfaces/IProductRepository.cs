@@ -9,12 +9,17 @@ namespace EasyShop.Core.Interfaces
 {
 	public interface IProductRepository
 	{
-		//Methods Signature that deals with product
-
-		Task<IReadOnlyList<Product>> GetAll();
+		
+		Task<IReadOnlyList<Product>> GetAllProducts();
 
 		Task<Product> GetProductById(int id);	
 
 		Task<int> AddProduct(Product product);
+
+        Task<bool> SubCategoryExists(int subCategoryId);
+
+        Task<int> UpdateProduct(int id,Product product);
+
+		Task<int> DeleteProduct(int id);
 	}
 }

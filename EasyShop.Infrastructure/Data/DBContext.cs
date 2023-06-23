@@ -27,7 +27,7 @@ namespace EasyShop.Infrastructure.Data
 
 		public DbSet<SubCategory> SubCategories { get; set; }
 
-		public DbSet<Section> Sections { get; set; }
+		//public DbSet<Section> Sections { get; set; }
 
 		public DbSet<Product> Products { get; set; }
 
@@ -61,6 +61,17 @@ namespace EasyShop.Infrastructure.Data
 			modelBuilder.Entity<StoreProduct>()
 					    .HasKey(s => new { s.ProductId, s.SellerId, s.StoreId });
 
-		}
-	}
+            modelBuilder.Entity<Category>()
+                      .HasIndex(s => s.CategoryName)
+                      .IsUnique();
+
+            modelBuilder.Entity<SubCategory>()
+                        .HasIndex(s => s.SubCategoryName)
+                        .IsUnique();
+
+          
+
+
+        }
+    }
 }

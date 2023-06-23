@@ -18,21 +18,21 @@ namespace EasyShop.Core.Entities
 
 		[ForeignKey("Status")]
 		public int StatusId { get; set; }
-		public Status Status { get; set; }
+		public virtual Status Status { get; set; }
 
 		[ForeignKey("PaymentMethod")]
 		public int PaymentMethodId { get; set; }
-		public PaymentMethod PaymentMethod { get; set; }
+		public virtual PaymentMethod PaymentMethod { get; set; }
 
 		[ForeignKey("Shipper")]
 		public int ShipperId { get; set; }
-		public Shipper Shipper { get; set; }
+		public virtual Shipper Shipper { get; set; }
 
 		[ForeignKey("Seller")]
 		public int SellerId { get; set; }
-		public Seller Seller { get; set; }
+		public virtual Seller Seller { get; set; }
 
-		public ICollection<OrderDetail> OrderDetails { get; set; }
+		public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 	}
 
 }
