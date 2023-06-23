@@ -32,12 +32,15 @@ namespace EasyShop.API.Controllers
 				Description = p.Description,
 				Title = p.Title,
 				Price = p.Price,
+                OperatingSystem = p.OperatingSystem ?? null,
+                HardDiskSize = p.HardDiskSize ?? null,
+                MemoryStorageCapacity = p.MemoryStorageCapacity ?? null,
+                SpecialFeatures = p.SpecialFeatures ?? null,
                 SubCategory = p.SubCategory != null ? p.SubCategory.SubCategoryName : null,
                 Category = p.SubCategory != null ? p.SubCategory.Category?.CategoryName : null,
 				ReviewsAverage=p.ReviewsAverage,
 				ReviewsCount=p.ReviewsCount,
             }));
-			//return Ok(products);
 		}
 
 
@@ -57,6 +60,11 @@ namespace EasyShop.API.Controllers
 				Description = productToReturn.Description,
 				Title = productToReturn.Title,
 				Price = productToReturn.Price,
+                Material= productToReturn.Material??null,
+                OperatingSystem= productToReturn.OperatingSystem??null,
+                HardDiskSize= productToReturn.HardDiskSize ?? null,
+                MemoryStorageCapacity=productToReturn.MemoryStorageCapacity??null,
+                SpecialFeatures= productToReturn.SpecialFeatures??null,
                 SubCategory = productToReturn.SubCategory != null ? productToReturn.SubCategory.SubCategoryName : null,
                 Category = productToReturn.SubCategory != null ? productToReturn.SubCategory.Category?.CategoryName : null,
                 ReviewsAverage = productToReturn.ReviewsAverage,

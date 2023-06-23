@@ -16,6 +16,16 @@ namespace EasyShop.API.DTOs
 
         public string Description { get; set; }
 
+        public string Material { get; set; }
+
+        public string OperatingSystem { get; set; }
+
+        public string HardDiskSize { get; set; }
+
+        public string SpecialFeatures { get; set; }
+
+        public string MemoryStorageCapacity { get; set; }
+
         public string SubCategory { get; set; }
 
         public string Category{ get; set; }
@@ -24,6 +34,6 @@ namespace EasyShop.API.DTOs
 
         public double ReviewsAverage { get; set; }
 
-
+        public string seller { get; set; }
     }
 }
