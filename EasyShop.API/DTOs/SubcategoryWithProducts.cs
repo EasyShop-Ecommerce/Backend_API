@@ -6,11 +6,13 @@
 
         public int CategoryId { get; set; }
 
+        public string CategoryName { get; set; }
+
         public string Name { get; set; }
 
         public string Image { get; set; }
 
-        public List<string> Products { get; set; } = new List<string>();
+        public List<int> ProductsIds { get; set; } = new List<int>();
 
     }
 }

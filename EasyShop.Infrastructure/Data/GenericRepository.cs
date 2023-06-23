@@ -59,21 +59,6 @@ namespace EasyShop.Infrastructure.Data
             }
         }
 
-        //public async Task UpdateAsync(T entity)
-        //{
-        //    try
-        //    {
-        //        context.Set<T>().Attach(entity);
-        //        context.Entry(entity).State = EntityState.Modified;
-        //        await context.SaveChangesAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("An error occurred while updating the entity.", ex);
-        //    }
-        //}
-
-
         public async Task<int> UpdateAsync(int id, T entity)
         {
             var entry = context.Entry(entity);

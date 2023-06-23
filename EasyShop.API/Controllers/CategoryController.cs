@@ -27,13 +27,6 @@ namespace EasyShop.API.Controllers
             return Ok(await categoryRepo.GetAllAsync());
         }
 
-        //[HttpGet("{id:int}")]
-
-        //public async Task<Category> GetCategory(int id)
-        //{
-        //    return await categoryRepo.GetByIdAsync(id);
-        //}
-
         [HttpGet("{id:int}", Name = "GetOneCategoryRoute")]
 
         public async Task<ActionResult<CategoryWithSubcategories>> GetCategory(int id)
@@ -135,7 +128,6 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpPost("uploadImage")]
-
         public async Task<IActionResult> UploadImage()
         {
             bool result = false;
@@ -176,6 +168,12 @@ namespace EasyShop.API.Controllers
         private string GetFilePath(string filename)
         {
             return environment.WebRootPath+"\\Uploads\\Category\\"+ filename;
+        }
+
+        private string GetImageByCategory(int categoryId )
+        {
+             string ImageUrl=string.Empty;
+            return ImageUrl;
         }
 
     }

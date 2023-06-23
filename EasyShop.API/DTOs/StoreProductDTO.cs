@@ -7,6 +7,9 @@
         public int SellerId { get; set; }
 
         public int ProductId { get; set; }
+
+        public int StoreId { get; set; }
+
     }
 
 }

@@ -161,9 +161,6 @@ namespace EasyShop.API.Controllers
 				Console.WriteLine($"An error occurred while deleting the product: {ex.Message}");
 				return StatusCode(500, "Internal server error");
 			}
-		}
-
-
-       
+		}      
 	}
 }

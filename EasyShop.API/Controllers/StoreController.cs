@@ -26,7 +26,7 @@ namespace EasyShop.API.Controllers
         }
 
        
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}",Name = "GetOneStoreRoute")]
         public async Task<ActionResult<StoreWithStoreProducts>> GetStoreWithProducts(int id)
         {
             var spec = new GetStoreWithProducts(id);
@@ -50,6 +50,80 @@ namespace EasyShop.API.Controllers
                 });
             }
             return Ok(storeWithStoreProducts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateStore(Store store)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                Store createdStore = await storeRepo.AddAsync(store);
+                string url = Url.Link("GetOneStoreRoute", new { id = store.Id });
+                return Created(url, createdStore);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while adding the store.");
+            }
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStore(int id, Store store)
+        {
+            if (id != store.Id)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    int rowsAffected = await storeRepo.UpdateAsync(id, store);
+
+                    if (rowsAffected > 0)
+                    {
+                        return Ok("Store Updated Successfully");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    return StatusCode(500, "An error occurred while updating the store.");
+                }
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStore(int id)
+        {
+            try
+            {
+                var entity = await storeRepo.GetByIdAsync(id);
+                if (entity == null)
+                {
+                    return NotFound("Store Not Found");
+                }
+
+                await storeRepo.DeleteAsync(entity);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the store.");
+            }
         }
     }
 }

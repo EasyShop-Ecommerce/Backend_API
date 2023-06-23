@@ -23,6 +23,7 @@ namespace EasyShop.API
 			});
 
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
+			builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>) );
 
             var app = builder.Build();
