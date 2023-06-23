@@ -40,7 +40,6 @@ namespace EasyShop.API.Controllers
                     UnitPrice=OrderDetail.UnitPrice,
                     Quantity = OrderDetail.Quantity,
                     ProductName = OrderDetail.Product.BrandName,
-                    SectionName = OrderDetail.Product.Section.SectionName
                 };
 
                 OrderDetailsDTOs.Add(OrderDetailsDTO);
@@ -65,7 +64,6 @@ namespace EasyShop.API.Controllers
                 UnitPrice = OrderDetails.UnitPrice,
                 Quantity = OrderDetails.Quantity,
                 ProductName = OrderDetails.Product.BrandName,
-                SectionName = OrderDetails.Product.Section.SectionName
             };
             return Ok(OrderDetailsDTO);
         }

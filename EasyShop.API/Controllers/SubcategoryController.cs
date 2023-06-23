@@ -53,57 +53,57 @@ namespace EasyShop.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(SubCategory subcategory)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+       // public async Task<IActionResult> CreateCategory(SubCategory subcategory)
+       // {
+       //     if (!ModelState.IsValid)
+       //     {
+       //         return BadRequest(ModelState);
+       //     }
 
-            try
-            {
-                SubCategory createdSubCategory = await subcategoryRepo.AddAsync(subcategory);
-                string url = Url.Link("GetOneSubcategoryRoute", new { id = subcategory.Id });
-                return Created(url, createdSubCategory);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while adding the subcategory.");
-            }
-        }
+       //     try
+       //     {
+       ////         SubCategory createdSubCategory = await subcategoryRepo.AddAsync(subcategory);
+       //         string url = Url.Link("GetOneSubcategoryRoute", new { id = subcategory.Id });
+       ////         return Created(url, createdSubCategory);
+       //     }
+       //     catch (Exception ex)
+       //     {
+       //         return StatusCode(500, "An error occurred while adding the subcategory.");
+       //     }
+       // }
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, SubCategory subcategory)
-        {
-            if (id != subcategory.Id)
-            {
-                return BadRequest();
-            }
+        //public async Task<IActionResult> UpdateCategory(int id, SubCategory subcategory)
+        //{
+        //    if (id != subcategory.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    int rowsAffected = await subcategoryRepo.UpdateAsync(id, subcategory);
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            int rowsAffected = await subcategoryRepo.UpdateAsync(id, subcategory);
 
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("SubCategory Updated Successfully");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
-                catch (DbUpdateException ex)
-                {
-                    return StatusCode(500, "An error occurred while updating the subcategory.");
-                }
-            }
+        //            if (rowsAffected > 0)
+        //            {
+        //                return Ok("SubCategory Updated Successfully");
+        //            }
+        //            else
+        //            {
+        //                return NotFound();
+        //            }
+        //        }
+        //        catch (DbUpdateException ex)
+        //        {
+        //            return StatusCode(500, "An error occurred while updating the subcategory.");
+        //        }
+        //    }
 
-            return BadRequest(ModelState);
-        }
+        //    return BadRequest(ModelState);
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
@@ -116,7 +116,7 @@ namespace EasyShop.API.Controllers
                     return NotFound("Subcategory Not Found");
                 }
 
-                await subcategoryRepo.DeleteAsync(entity);
+            //    await subcategoryRepo.DeleteAsync(entity);
 
                 return NoContent();
             }

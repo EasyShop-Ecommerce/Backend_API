@@ -4,9 +4,9 @@ public partial class DatabaseSeeder
 {
     public class InitializationService
     {
-        private readonly StoreContext _dbContext;
+        private readonly DBContext _dbContext;
 
-        public InitializationService(StoreContext dbContext)
+        public InitializationService(DBContext dbContext)
         {
             _dbContext = dbContext;
         }

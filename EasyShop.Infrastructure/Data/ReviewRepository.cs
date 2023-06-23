@@ -11,9 +11,9 @@ namespace EasyShop.Infrastructure.Data
 {
     public class ReviewRepository : IReviewRepository
     {
-        private readonly StoreContext context;
+        private readonly DBContext context;
 
-        public ReviewRepository(StoreContext _context)
+        public ReviewRepository(DBContext _context)
         {
             context = _context;
         }

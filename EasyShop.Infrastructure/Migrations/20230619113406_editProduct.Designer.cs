@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EasyShop.Infrastructure.Migrations
 {
-    [DbContext(typeof(StoreContext))]
+    [DbContext(typeof(DBContext))]
     [Migration("20230619113406_editProduct")]
     partial class editProduct
     {

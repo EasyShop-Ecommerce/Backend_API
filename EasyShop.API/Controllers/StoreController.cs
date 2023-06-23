@@ -53,57 +53,57 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateStore(Store store)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //public async Task<IActionResult> CreateStore(Store store)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            try
-            {
-                Store createdStore = await storeRepo.AddAsync(store);
-                string url = Url.Link("GetOneStoreRoute", new { id = store.Id });
-                return Created(url, createdStore);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while adding the store.");
-            }
-        }
+        //    try
+        //    {
+        //      //  Store createdStore = await storeRepo.AddAsync(store);
+        //        string url = Url.Link("GetOneStoreRoute", new { id = store.Id });
+        //   //     return Created(url, createdStore);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "An error occurred while adding the store.");
+        //    }
+        //}
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStore(int id, Store store)
-        {
-            if (id != store.Id)
-            {
-                return BadRequest();
-            }
+        //public async Task<IActionResult> UpdateStore(int id, Store store)
+        //{
+        //    if (id != store.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    int rowsAffected = await storeRepo.UpdateAsync(id, store);
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            int rowsAffected = await storeRepo.EditAsync(id, store);
 
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("Store Updated Successfully");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
-                catch (DbUpdateException ex)
-                {
-                    return StatusCode(500, "An error occurred while updating the store.");
-                }
-            }
+        //            if (rowsAffected > 0)
+        //            {
+        //                return Ok("Store Updated Successfully");
+        //            }
+        //            else
+        //            {
+        //                return NotFound();
+        //            }
+        //        }
+        //        catch (DbUpdateException ex)
+        //        {
+        //            return StatusCode(500, "An error occurred while updating the store.");
+        //        }
+        //    }
 
-            return BadRequest(ModelState);
-        }
+        //    return BadRequest(ModelState);
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStore(int id)
@@ -116,7 +116,7 @@ namespace EasyShop.API.Controllers
                     return NotFound("Store Not Found");
                 }
 
-                await storeRepo.DeleteAsync(entity);
+             //   await storeRepo.DeleteAsync(entity);
 
                 return NoContent();
             }

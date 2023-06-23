@@ -54,78 +54,78 @@ namespace EasyShop.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+     //   public async Task<IActionResult> Create(Category category)
+     //   {
+     //       if (!ModelState.IsValid)
+     //       {
+     //           return BadRequest(ModelState);
+     //       }
 
-            try
-            {
-                Category createdCategory = await categoryRepo.AddAsync(category);
-                string url = Url.Link("GetOnecategoryRoute", new { id =category.Id });
-                return Created(url, createdCategory);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while adding the category.");
-            }
-        }
+     //       try
+     //       {
+     //  //         Category createdCategory = await categoryRepo.AddAsync(category);
+     //           string url = Url.Link("GetOnecategoryRoute", new { id =category.Id });
+     ////           return Created(url, createdCategory);
+     //       }
+     //       catch (Exception ex)
+     //       {
+     //           return StatusCode(500, "An error occurred while adding the category.");
+     //       }
+     //   }
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Category category)
-        {
-            if (id != category.Id)
-            {
-                return BadRequest();
-            }
+        //public async Task<IActionResult> Update(int id, Category category)
+        //{
+        //    if (id != category.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    int rowsAffected = await categoryRepo.UpdateAsync(id,category);
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            int rowsAffected = await categoryRepo.UpdateAsync(id,category);
 
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("Category Updated Successfully");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
-                catch (DbUpdateException ex)
-                {
-                    return StatusCode(500, "An error occurred while updating the category.");
-                }
-            }
+        //            if (rowsAffected > 0)
+        //            {
+        //                return Ok("Category Updated Successfully");
+        //            }
+        //            else
+        //            {
+        //                return NotFound();
+        //            }
+        //        }
+        //        catch (DbUpdateException ex)
+        //        {
+        //            return StatusCode(500, "An error occurred while updating the category.");
+        //        }
+        //    }
 
-            return BadRequest(ModelState);
-        }
+        //    return BadRequest(ModelState);
+        //}
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                var entity = await categoryRepo.GetByIdAsync(id);
-                if (entity == null)
-                {
-                    return NotFound();
-                }
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    try
+        //    {
+        //        var entity = await categoryRepo.GetByIdAsync(id);
+        //        if (entity == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-                await categoryRepo.DeleteAsync(entity);
+        //        await categoryRepo.DeleteAsync(entity);
 
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while deleting the category.");
-            }
-        }
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "An error occurred while deleting the category.");
+        //    }
+        //}
 
         [HttpPost("uploadImage")]
         public async Task<IActionResult> UploadImage()

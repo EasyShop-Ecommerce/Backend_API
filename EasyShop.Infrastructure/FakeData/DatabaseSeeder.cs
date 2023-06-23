@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 public partial class DatabaseSeeder
 {
-    private readonly StoreContext _context;
+    private readonly DBContext _context;
 
-    public DatabaseSeeder(StoreContext context)
+    public DatabaseSeeder(DBContext context)
     {
         _context = context;
     }

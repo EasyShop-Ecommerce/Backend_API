@@ -12,9 +12,9 @@ namespace EasyShop.Infrastructure.Data
 {
     public class StoreProductRepository : IStoreProductRepository
     {
-        private readonly StoreContext _dbContext;
+        private readonly DBContext _dbContext;
 
-        public StoreProductRepository(StoreContext dbContext)
+        public StoreProductRepository(DBContext dbContext)
         {
             _dbContext = dbContext;
         }
