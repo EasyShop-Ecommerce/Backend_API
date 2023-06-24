@@ -18,5 +18,7 @@ namespace EasyShop.Core.Interfaces
         Task UpdateAsync(StoreProduct storeProduct);
 
         Task DeleteAsync(StoreProduct storeProduct);
+
+        //Task<IReadOnlyList<StoreProduct>> GetSellerProducts(int sellerId);
     }
 }

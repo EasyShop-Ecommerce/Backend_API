@@ -57,6 +57,7 @@ namespace EasyShop.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReview(Review review)
         {
+            if(review == null) return BadRequest();
             try
             {
                 if (!ModelState.IsValid)
@@ -64,7 +65,6 @@ namespace EasyShop.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                // Add the review to the repository
                 var result = await _reviewRepository.AddAsync(review);
                 return Ok(result);
             }
@@ -79,6 +79,7 @@ namespace EasyShop.API.Controllers
         {
             try
             {
+                if (review==null) return BadRequest();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);

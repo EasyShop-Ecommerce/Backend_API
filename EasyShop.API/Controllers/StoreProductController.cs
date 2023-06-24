@@ -123,7 +123,6 @@ namespace EasyShop.API.Controllers
                 return NotFound("Store product Not Found");
             }
 
-            // Update the store product
             existingStoreProduct.Quantity = storeProduct.Quantity;
 
             await _storeProductRepository.UpdateAsync(existingStoreProduct);
@@ -145,6 +144,9 @@ namespace EasyShop.API.Controllers
 
             return NoContent();
         }
+
+        //[HttpGet("{sellerId:int}")]
+        //public async Task<IActionResult<IReadOnlyList<>>
     }
 
     //Possible Needed Functionalities:

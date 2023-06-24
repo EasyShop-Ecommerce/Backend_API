@@ -22,7 +22,8 @@ namespace EasyShop.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Store>>> GetAllStores() 
         {
-            return Ok(await storeRepo.GetAllAsync());
+            IReadOnlyList<Store> stores = await storeRepo.GetAllAsync();
+            return Ok();
         }
 
        
@@ -77,10 +78,8 @@ namespace EasyShop.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStore(int id, Store store)
         {
-            if (id != store.Id)
-            {
-                return BadRequest();
-            }
+            if(store== null) return BadRequest();
+            if (id != store.Id) return BadRequest();
 
             if (ModelState.IsValid)
             {

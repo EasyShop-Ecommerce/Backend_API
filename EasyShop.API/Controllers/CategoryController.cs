@@ -56,6 +56,7 @@ namespace EasyShop.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory(Category category)
         {
+            if (category == null) return BadRequest();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -77,6 +78,7 @@ namespace EasyShop.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, Category category)
         {
+            if (category == null) return BadRequest("No Category Provided");
             if (id != category.Id)
             {
                 return BadRequest();
@@ -105,7 +107,7 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteCategory(int id)
         {
             try
             {
@@ -124,6 +126,8 @@ namespace EasyShop.API.Controllers
                 return StatusCode(500, "An error occurred while deleting the category.");
             }
         }
+
+
 
         [HttpPost("uploadImage")]
         public async Task<IActionResult> UploadImage()
@@ -165,12 +169,14 @@ namespace EasyShop.API.Controllers
         [NonAction]
         private string GetFilePath(string filename)
         {
+            Console.WriteLine(environment.WebRootPath + "\\Uploads\\Category\\" + filename);
             return environment.WebRootPath+"\\Uploads\\Category\\"+ filename;
         }
 
+        [NonAction]
         private string GetImageByCategory(int categoryId )
         {
-             string ImageUrl=string.Empty;
+            string ImageUrl=string.Empty;
             return ImageUrl;
         }
 
