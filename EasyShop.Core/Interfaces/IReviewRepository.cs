@@ -7,18 +7,8 @@ using System.Threading.Tasks;
 
 namespace EasyShop.Core.Interfaces
 {
-    public interface IReviewRepository
-    {
-        Task<IReadOnlyList<Review>> GetAll();
-
-        Task<Review> GetByIdAsync(int id);
-
-        Task AddAsync(Review review);
-
-        Task UpdateAsync(Review review);
-
-        Task DeleteAsync(Review review);
-
+    public interface IReviewRepository:IGenericRepository<Review>
+    {      
         Task<IReadOnlyList<Review>> GetReviewsForProduct(int productId);
     }
 }

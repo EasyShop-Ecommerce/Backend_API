@@ -72,7 +72,7 @@ namespace EasyShop.Infrastructure.Data
         {
             T c = await Context.Set<T>().FindAsync(Id1, Id2);
             Context.Entry(c).State = EntityState.Modified;
-            int row = Context.SaveChanges();
+            int row =await Context.SaveChangesAsync();
             return ($"NO.Rows is affected = {row}");
         }
 
@@ -114,7 +114,50 @@ namespace EasyShop.Infrastructure.Data
 
         }
 
-       
+        public async Task<T> GetByIdAsync(params int[] ids)
+        {
+            return await Context.Set<T>().FindAsync(ids);
+        }
+
+        public async Task<T> DeleteAsync(params int[] ids)
+        {
+            int row = 0;
+            T entity = await Context.Set<T>().FindAsync(ids);
+            if (entity != null)
+            {
+                Context.Set<T>().Remove(entity);
+                row = Context.SaveChanges();
+                await Console.Out.WriteLineAsync($"Deleted Row {row}");
+                return entity;
+            }
+
+            return entity;
+        }
+
+        public async Task<string> UpdateAsync(T entity, params int[] ids)
+        {
+            if (ids.Length != 2)
+            {
+                return "Invalid number of IDs provided.";
+            }
+
+            T existingEntity = await Context.Set<T>().FindAsync(ids[0], ids[1]);
+            if (existingEntity != null)
+            {
+                Context.Entry(existingEntity).CurrentValues.SetValues(entity);
+                int rowsAffected = await Context.SaveChangesAsync();
+                return $"No. of rows affected = {rowsAffected}";
+            }
+            else
+            {
+                return "Entity not found.";
+            }
+        }
+
+
+
+
+
 
         //public async Task<T> AddAsync(T entity)
         //{
@@ -130,21 +173,7 @@ namespace EasyShop.Infrastructure.Data
         //    }
         //}
 
-        //public async Task<int> UpdateAsync(int id, T entity)
-        //{
-        //    var entry = context.Entry(entity);
-        //    entry.State = EntityState.Modified;
 
-        //    try
-        //    {
-        //        int rowsAffected = await context.SaveChangesAsync();
-        //        return rowsAffected;
-        //    }
-        //    catch (DbUpdateException ex)
-        //    {
-        //        throw new Exception("An error occurred while updating the entity.", ex);
-        //    }
-        //}
 
         //public async Task DeleteAsync(T entity)
         //{
