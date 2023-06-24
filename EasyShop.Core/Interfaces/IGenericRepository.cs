@@ -21,7 +21,7 @@ namespace EasyShop.Core.Interfaces
 
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
-        Task<string> AddAsync(T t);
+        Task<T> AddAsync(T t);
 
 		Task<string> EditAsync(int Id1,int Id2,T t);
         Task<string> EditAsync(int Id, T t);

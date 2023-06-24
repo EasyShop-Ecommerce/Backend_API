@@ -64,9 +64,9 @@ namespace EasyShop.API.Controllers
 
             try
             {
-                await storeRepo.AddAsync(store);
+                Store createdStore = await storeRepo.AddAsync(store);
                 string url = Url.Link("GetOneStoreRoute", new { id = store.Id });
-                return Created(url, "Store Added Successfully");
+                return Created(url, createdStore);
             }
             catch (Exception ex)
             {
@@ -87,10 +87,10 @@ namespace EasyShop.API.Controllers
                 {
                     string result = await storeRepo.EditAsync(id, store);
 
-                    if (result == "Entity not found.")
-                    {
-                        return NotFound("The specified store does not exist.");
-                    }
+                    //if (result == "Entity not found.")
+                    //{
+                    //    return NotFound("The specified store does not exist.");
+                    //}
 
                     return Ok("Store Updated Successfully");
                 }

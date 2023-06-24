@@ -79,10 +79,10 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                String result = await CreditCardRepo.AddAsync(CreditCard);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+                CreditCard createdCreditCard = await CreditCardRepo.AddAsync(CreditCard);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdCreditCard}");
                 string url = Url.Link("GetOneCreditCardRoute", new { id = CreditCard.Id });
-                return Created(url, $"This CreditCard : {CreditCard.Cardholder_name} is Added");
+                return Created(url, createdCreditCard);
             }
             return BadRequest(ModelState);
         }

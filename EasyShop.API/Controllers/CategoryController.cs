@@ -64,9 +64,9 @@ namespace EasyShop.API.Controllers
 
             try
             {
-                string result = await categoryRepo.AddAsync(category);
+                Category createdCategory= await categoryRepo.AddAsync(category);
                 string url = Url.Link("GetOnecategoryRoute", new { id = category.Id });
-                return Created(url,"Category Created Successfully");
+                return Created(url, createdCategory);
             }
             catch (Exception ex)
             {
@@ -90,10 +90,10 @@ namespace EasyShop.API.Controllers
                 {
                     string result = await categoryRepo.EditAsync(id, category);
 
-                    if (result == "Entity not found.")
-                    {
-                        return NotFound("The specified category does not exist.");
-                    }
+                    //if (result == "Entity not found.")
+                    //{
+                    //    return NotFound("The specified category does not exist.");
+                    //}
 
                     return Ok("Category Updated Successfully");
                 }

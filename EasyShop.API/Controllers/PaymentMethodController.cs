@@ -102,10 +102,10 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                String result = await PaymentMethodRepo.AddAsync(PaymentMethod);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+                PaymentMethod createdPaymentMethod = await PaymentMethodRepo.AddAsync(PaymentMethod);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdPaymentMethod}");
                 string url = Url.Link("GetOnePaymentMethodRoute", new { id = PaymentMethod.Id });
-                return Created(url, $"This PaymentMethod : {PaymentMethod.Method} is Added");
+                return Created(url, createdPaymentMethod);
             }
             return BadRequest(ModelState);
         }

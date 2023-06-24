@@ -75,10 +75,11 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                String result = await OrderDetailsRepo.AddAsync(OrderDetails);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+                OrderDetail createdOrderDetails = await OrderDetailsRepo.AddAsync(OrderDetails);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdOrderDetails}");
                 string url = Url.Link("GetOneOrderDetailsRoute", new { id1 = OrderDetails.OrderId,id2=OrderDetails.ProductId});
-                return Created(url, $"This OrderDetails : {OrderDetails.OrderId}/{OrderDetails.ProductId} is Added");
+                return Created(url, createdOrderDetails);
+                //return Created(url, $"This OrderDetails : {OrderDetails.OrderId}/{OrderDetails.ProductId} is Added");
             }
             return BadRequest(ModelState);
         }

@@ -62,9 +62,9 @@ namespace EasyShop.API.Controllers
 
             try
             {
-                await subcategoryRepo.AddAsync(subcategory);
+                SubCategory createdSubcategory =await subcategoryRepo.AddAsync(subcategory);
                 string url = Url.Link("GetOneSubcategoryRoute", new { id = subcategory.Id });
-                return Created(url,"Subcategory Added Successfully");
+                return Created(url, createdSubcategory);
             }
             catch (Exception ex)
             {
@@ -87,10 +87,10 @@ namespace EasyShop.API.Controllers
                 {
                     string result = await subcategoryRepo.EditAsync(id, subcategory);
 
-                    if (result == "Entity not found.")
-                    {
-                        return NotFound("The specified subcategory does not exist.");
-                    }
+                    //if (result == "Entity not found.")
+                    //{
+                    //    return NotFound("The specified subcategory does not exist.");
+                    //}
 
                     return Ok("SubCategory Updated Successfully");
                 }
