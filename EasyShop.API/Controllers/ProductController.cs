@@ -94,31 +94,31 @@ namespace EasyShop.API.Controllers
         }
 
 
-        //      [HttpPut("{id:int}")]
-        //public async Task<ActionResult> UpdateProduct(int id, Product product)
-        //{
-        //	if (ModelState.IsValid)
-        //	{
-        //		int result = await productRepo.UpdateProduct(id, product);
-        //		if (result > 0)
-        //		{
-        //			return StatusCode(204, "Product Updated Successfully");
-        //		}
-        //		else if (result == -1)
-        //		{
-        //			return NotFound("Product Not Found");
-        //		}
-        //		else
-        //		{
-        //			return StatusCode(500);
-        //		}
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateProduct(int id, Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                int result = await productRepo.UpdateProduct(id, product);
+                if (result > 0)
+                {
+                    return StatusCode(204, "Product Updated Successfully");
+                }
+                else if (result == -1)
+                {
+                    return NotFound("Product Not Found");
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
 
-        //	}
-        //	else
-        //	{
-        //		return BadRequest(ModelState);
-        //	}
-        //}
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, Product product)

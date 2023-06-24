@@ -20,14 +20,14 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Category>>> GetAllCategories()
+        public async Task<ActionResult<IReadOnlyList<Category>>> GetAllSubCategories()
         {
             return Ok(await subcategoryRepo.GetAllAsync());
         }
 
         [HttpGet("{id:int}", Name = "GetOneSubcategoryRoute")]
 
-        public async Task<ActionResult<CategoryWithSubcategories>> GetCategory(int id)
+        public async Task<ActionResult<CategoryWithSubcategories>> GetSubCategory(int id)
         {
             var spec = new GetProductsOfSubcategory(id);
             SubCategory subcategory = await subcategoryRepo.GetEntityWithSpec(spec);
@@ -40,7 +40,7 @@ namespace EasyShop.API.Controllers
             SubcategoryWithProducts subcategoryWithProducts = new SubcategoryWithProducts();
             subcategoryWithProducts.SubCategoryId = id;
             subcategoryWithProducts.CategoryId = subcategory.CategoryId;
-            subcategoryWithProducts.CategoryName = subcategory.Category.CategoryName;
+            subcategoryWithProducts.CategoryName = subcategory.Category!=null? subcategory.Category.CategoryName:"No Category";
             subcategoryWithProducts.Name = subcategory.SubCategoryName;
             subcategoryWithProducts.Image = subcategory.SubCategoryImage;
             foreach (var item in subcategory.Products)
@@ -53,60 +53,58 @@ namespace EasyShop.API.Controllers
 
 
         [HttpPost]
-       // public async Task<IActionResult> CreateCategory(SubCategory subcategory)
-       // {
-       //     if (!ModelState.IsValid)
-       //     {
-       //         return BadRequest(ModelState);
-       //     }
+        public async Task<IActionResult> CreateSubCategory(SubCategory subcategory)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-       //     try
-       //     {
-       ////         SubCategory createdSubCategory = await subcategoryRepo.AddAsync(subcategory);
-       //         string url = Url.Link("GetOneSubcategoryRoute", new { id = subcategory.Id });
-       ////         return Created(url, createdSubCategory);
-       //     }
-       //     catch (Exception ex)
-       //     {
-       //         return StatusCode(500, "An error occurred while adding the subcategory.");
-       //     }
-       // }
+            try
+            {
+                await subcategoryRepo.AddAsync(subcategory);
+                string url = Url.Link("GetOneSubcategoryRoute", new { id = subcategory.Id });
+                return Created(url,"Subcategory Added Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while adding the subcategory.");
+            }
+        }
 
 
         [HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateCategory(int id, SubCategory subcategory)
-        //{
-        //    if (id != subcategory.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        public async Task<IActionResult> UpdateSubCategory(int id, SubCategory subcategory)
+        {
+            if (id != subcategory.Id)
+            {
+                return BadRequest();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            int rowsAffected = await subcategoryRepo.UpdateAsync(id, subcategory);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string result = await subcategoryRepo.EditAsync(id, subcategory);
 
-        //            if (rowsAffected > 0)
-        //            {
-        //                return Ok("SubCategory Updated Successfully");
-        //            }
-        //            else
-        //            {
-        //                return NotFound();
-        //            }
-        //        }
-        //        catch (DbUpdateException ex)
-        //        {
-        //            return StatusCode(500, "An error occurred while updating the subcategory.");
-        //        }
-        //    }
+                    if (result == "Entity not found.")
+                    {
+                        return NotFound("The specified subcategory does not exist.");
+                    }
 
-        //    return BadRequest(ModelState);
-        //}
+                    return Ok("SubCategory Updated Successfully");
+                }
+                catch (DbUpdateException ex)
+                {
+                    return StatusCode(500, "An error occurred while updating the subcategory.");
+                }
+            }
+
+            return BadRequest(ModelState);
+        }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteSubCategory(int id)
         {
             try
             {
@@ -116,9 +114,9 @@ namespace EasyShop.API.Controllers
                     return NotFound("Subcategory Not Found");
                 }
 
-            //    await subcategoryRepo.DeleteAsync(entity);
+             await subcategoryRepo.DeleteAsync(id);
 
-                return NoContent();
+             return StatusCode(204,"SubCategory Deleted Successfully");
             }
             catch (Exception ex)
             {
