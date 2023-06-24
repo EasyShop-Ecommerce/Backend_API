@@ -32,7 +32,7 @@ namespace EasyShop.Core.Entities
 		public int SellerId { get; set; }
 		public virtual Seller Seller { get; set; }
 
-		public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+		public virtual ICollection<OrderDetail> OrderDetails { get; set; }= new List<OrderDetail>();
 	}
 
 }

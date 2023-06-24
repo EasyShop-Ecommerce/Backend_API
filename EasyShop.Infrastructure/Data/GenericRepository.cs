@@ -61,19 +61,19 @@ namespace EasyShop.Infrastructure.Data
         public async Task<string> EditAsync(int Id, T t)
         {
 
-          T c = await Context.Set<T>().FindAsync(Id);
-          Context.Entry(c).State = EntityState.Modified;
-          int row = Context.SaveChanges();
-          return ($"NO.Rows is affected = {row}");
+                T c = await Context.Set<T>().FindAsync(Id);
+                Context.Entry(c).CurrentValues.SetValues(t);
+                int rowsAffected = await Context.SaveChangesAsync();
+                return $"No. of rows affected = {rowsAffected}";
 
         }
 
         public async Task<string> EditAsync(int Id1, int Id2, T t)
         {
-            T c = await Context.Set<T>().FindAsync(Id1, Id2);
-            Context.Entry(c).State = EntityState.Modified;
-            int row = Context.SaveChanges();
-            return ($"NO.Rows is affected = {row}");
+            T c = await Context.Set<T>().FindAsync(Id1,Id2);
+            Context.Entry(c).CurrentValues.SetValues(t);
+            int rowsAffected = await Context.SaveChangesAsync();
+            return $"No. of rows affected = {rowsAffected}";
         }
 
         public async Task<IReadOnlyList<T>> GetAllAsync()

@@ -1,4 +1,7 @@
 ﻿using EasyShop.Core.Entities;
+using EasyShop.Core.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace EasyShop.Infrastructure.Data
 {
-	public class DBContext:DbContext
+	public class DBContext:IdentityDbContext<AppUser>
 	{
 
-		public DBContext(DbContextOptions<DBContext> options) : base(options)
+		public DBContext(DbContextOptions  options) : base(options)
 		{
 		}
 
@@ -49,7 +52,16 @@ namespace EasyShop.Infrastructure.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<ProductImage>()
+            modelBuilder.Entity<IdentityUserLogin<string>>()
+				.HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
+            modelBuilder.Entity<IdentityUserRole<string>>()
+				.HasKey(r => new { r.UserId, r.RoleId });
+
+            modelBuilder.Entity<IdentityUserToken<string>>()
+				.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+
+            modelBuilder.Entity<ProductImage>()
 						 .HasKey(p => new { p.Id, p.ProductId });
 
 			modelBuilder.Entity<Review>()

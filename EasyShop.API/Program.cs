@@ -1,8 +1,14 @@
 using EasyShop.Core.Entities;
+using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace EasyShop.API
 {
@@ -23,7 +29,30 @@ namespace EasyShop.API
 				options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
-			builder.Services.AddScoped<IProductRepository, ProductRepository>();
+			// Create User
+			builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<DBContext>();
+
+			// [Autthorize] Used JWT Token In Check Authentication
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultScheme=JwtBearerDefaults.AuthenticationScheme;	
+				options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme=JwtBearerDefaults.AuthenticationScheme;
+			}).AddJwtBearer(options =>
+			{
+				options.SaveToken = true;
+				options.RequireHttpsMetadata = false;
+				options.TokenValidationParameters = new TokenValidationParameters()
+				{
+					ValidateIssuer = true,
+					ValidIssuer =builder.Configuration["JWT:ValidIssuer"],
+					ValidateAudience = true,
+					ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey= new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                };
+            });
+
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
 			builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 			builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 			
@@ -42,7 +71,8 @@ namespace EasyShop.API
 			app.UseStaticFiles();
 			app.UseHttpsRedirection();
 
-			app.UseAuthorization();
+            app.UseAuthorization();
+            app.UseAuthorization();
 
 
 			app.MapControllers();
