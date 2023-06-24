@@ -50,8 +50,6 @@ namespace EasyShop.API
 				app.UseSwaggerUI();
 			}
 
-          
-
             app.UseCors(MyAllowSpecificOrigins);
             app.UseStaticFiles();
 			app.UseHttpsRedirection();
