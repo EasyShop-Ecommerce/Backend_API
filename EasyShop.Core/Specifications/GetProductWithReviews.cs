@@ -17,6 +17,7 @@ namespace EasyShop.Core.Specifications
         public GetProductWithReviews(int id):base(p=>p.Id==id)
         {
             AddIncludes(p => p.Reviews);
+            AddIncludes(p => p.SubCategory);
         }
     }
 }

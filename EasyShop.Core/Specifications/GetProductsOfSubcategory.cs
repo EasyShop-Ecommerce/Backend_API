@@ -12,6 +12,7 @@ namespace EasyShop.Core.Specifications
         public GetProductsOfSubcategory(int id) :base(sub=>sub.Id==id)
         {
             AddIncludes(sub => sub.Products);
+            AddIncludes(sub => sub.Category);
         }
     }
 }

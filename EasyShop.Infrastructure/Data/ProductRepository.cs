@@ -30,8 +30,10 @@ namespace EasyShop.Infrastructure.Data
 		public async Task<Product> GetProductById(int id)
 		{
 			return await Context.Products
-				.Include(p=>p.SubCategory)
-				.SingleOrDefaultAsync(p => p.Id == id);
+								.Include(p=>p.SubCategory)
+								.ThenInclude(p => p.Category)
+								.Include(p => p.Reviews)
+								.SingleOrDefaultAsync(p => p.Id == id);
 		}
 
         public async Task<bool> SubCategoryExists(int subCategoryId)

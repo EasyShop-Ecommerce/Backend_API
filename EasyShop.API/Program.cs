@@ -17,10 +17,11 @@ namespace EasyShop.API
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-			// Add services to the container.
+            // Add services to the container.
 
-			builder.Services.AddControllers();
+            builder.Services.AddControllers();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
@@ -58,8 +59,18 @@ namespace EasyShop.API
 			
             builder.Services.AddScoped(typeof (IGenericRepository<>), typeof(GenericRepository<>));
 			builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                });
+            });
             var app = builder.Build();
+
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
@@ -68,7 +79,8 @@ namespace EasyShop.API
 				app.UseSwaggerUI();
 			}
 
-			app.UseStaticFiles();
+            app.UseCors(MyAllowSpecificOrigins);
+            app.UseStaticFiles();
 			app.UseHttpsRedirection();
 
             app.UseAuthorization();
