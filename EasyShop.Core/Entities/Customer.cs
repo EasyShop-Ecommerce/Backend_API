@@ -1,4 +1,5 @@
 ﻿using EasyShop.Core.Enums;
+using EasyShop.Core.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,10 +26,12 @@ namespace EasyShop.Core.Entities
 		[RegularExpression("^01[0125][0-9]{8}$",ErrorMessage ="Invalid Egyptian Number")]
 		public string Phone { get; set; }
 
-		public ICollection<CreditCard> CreditCards { get;  }= new List<CreditCard>();
-
-		public  ICollection<Order> Orders { get;  }=new List<Order>();
-		public ICollection<Review> Reviews { get; } = new List<Review>();
+		//[ForeignKey("AppUser")]
+		//public int AppUserId { get; set; }
+		//public AppUser AppUser { get; set; }
+		public virtual ICollection<CreditCard> CreditCards { get;  }= new List<CreditCard>();
+		public virtual ICollection<Order> Orders { get;  }=new List<Order>();
+		public virtual ICollection<Review> Reviews { get; } = new List<Review>();
 	}
 
 }

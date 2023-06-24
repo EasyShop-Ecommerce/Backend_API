@@ -16,4 +16,8 @@
     <Compile Remove="Entities\SmartphonesProduct.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.19" />
+  </ItemGroup>
+
 </Project>
