@@ -16,7 +16,7 @@ namespace EasyShop.API.Controllers
 		private readonly IProductRepository productRepo;
         //private readonly IGenericRepository<Product> productRepo;
 
-        public ProductController(IProductRepository _productRepo, IWebHostEnvironment _environment)
+        public ProductController(IProductRepository _productRepo)
 		{
             productRepo = _productRepo;
         }
@@ -77,6 +77,7 @@ namespace EasyShop.API.Controllers
 		[HttpPost]
         public async Task<ActionResult> AddProduct(Product product)
         {
+            if (product == null) return BadRequest();
             if (ModelState.IsValid)
             {
                 // Check if the specified SubCategoryId exists
@@ -95,39 +96,10 @@ namespace EasyShop.API.Controllers
 
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> UpdateProduct(int id, Product product)
+        public async Task<IActionResult> UpdateProduct(int id, Product product)
         {
-            if (ModelState.IsValid)
-            {
-                int result = await productRepo.UpdateProduct(id, product);
-                if (result > 0)
-                {
-                    return StatusCode(204, "Product Updated Successfully");
-                }
-                else if (result == -1)
-                {
-                    return NotFound("Product Not Found");
-                }
-                else
-                {
-                    return StatusCode(500);
-                }
-
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
-        }
-
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, Product product)
-        {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
+            if (product == null) return BadRequest();
+            if (id != product.Id) return BadRequest();
             if (ModelState.IsValid)
             {
                 try
