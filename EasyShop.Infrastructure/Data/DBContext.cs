@@ -14,7 +14,7 @@ namespace EasyShop.Infrastructure.Data
 	public class DBContext:IdentityDbContext<AppUser>
 	{
 
-		public DBContext(DbContextOptions  options) : base(options)
+		public DBContext(DbContextOptions<DBContext>  options) : base(options)
 		{
 		}
 
@@ -52,6 +52,8 @@ namespace EasyShop.Infrastructure.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+
+            
             modelBuilder.Entity<IdentityUserLogin<string>>()
 				.HasKey(l => new { l.LoginProvider, l.ProviderKey });
 

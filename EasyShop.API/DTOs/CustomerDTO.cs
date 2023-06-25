@@ -15,8 +15,5 @@ namespace EasyShop.API.DTOs
         public List<decimal> orders { get; set; } =new List<decimal>();
         public List<string> creditCards { get; set; }=new List<string>();
 
-        //public ICollection<OrderDTO> orders { get; set; }
-        //public ICollection<CreditCardDTO> creditCards { get; set; }
-
     }
 }
