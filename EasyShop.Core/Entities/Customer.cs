@@ -26,9 +26,6 @@ namespace EasyShop.Core.Entities
 		[RegularExpression("^01[0125][0-9]{8}$",ErrorMessage ="Invalid Egyptian Number")]
 		public string Phone { get; set; }
 
-		//[ForeignKey("AppUser")]
-		//public int AppUserId { get; set; }
-		//public AppUser AppUser { get; set; }
 		public virtual ICollection<CreditCard> CreditCards { get;  }= new List<CreditCard>();
 		public virtual ICollection<Order> Orders { get;  }=new List<Order>();
 		public virtual ICollection<Review> Reviews { get; } = new List<Review>();

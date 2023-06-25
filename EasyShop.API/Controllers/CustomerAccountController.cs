@@ -1,5 +1,8 @@
 ﻿using EasyShop.API.DTOs;
+using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
+using EasyShop.Core.Interfaces;
+using EasyShop.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,40 +16,55 @@ namespace EasyShop.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class CustomerAccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _config;
+        private readonly DBContext _context;
+        
 
-        public AccountController(UserManager<AppUser> userManager ,SignInManager<AppUser> signInManager,IConfiguration config)
+        public CustomerAccountController(UserManager<AppUser> userManager ,IConfiguration config,DBContext context)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _config=config;
+            _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register (RegisterDTO registerDTO)
+        public async Task<ActionResult> Register (CustmerRegisterDTO registerDTO)
         {
             if(ModelState.IsValid)
             {
+                var customer = new Customer()
+                {
+                    Name = registerDTO.Name,
+                    Phone = registerDTO.Phone,
+                    Email = registerDTO.Email,
+                    City = registerDTO.City,
+                    Government = registerDTO.Government,
+                    Street = registerDTO.Street,
+                };
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+
                 AppUser user = new AppUser();
-                user.Email = registerDTO.Email; 
-                user.UserName = registerDTO.UserName;
+                user.UserName = registerDTO.Name;
+                user.Phone= registerDTO.Phone;
+                user.Email = registerDTO.Email;
+                user.Street = registerDTO.Street;
+                user.City = registerDTO.City;
+                user.Government = registerDTO.Government;
+                user.CustomerID = customer.Id;
+                user.SellerID = null;
                 var result= await _userManager.CreateAsync(user,registerDTO.Password);
                 if (result.Succeeded)
                 {
-                    return Ok("Account is Added Sucessfully");
+
+                    return Ok(customer);
                 }
                 else
                 {
-                    var errors=new List<IdentityError>();
-                    foreach(var error in result.Errors)
-                    {
-                        errors.Add(error);
-                    }
-                    return BadRequest(errors);
+                    return BadRequest(result.Errors);
                 }
             }
 
@@ -61,7 +79,7 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user =await  _userManager.FindByNameAsync(loginDTO.UserName);
+                var user =await  _userManager.FindByEmailAsync(loginDTO.Email);
                 if(user != null)
                 {
                     bool found=await _userManager.CheckPasswordAsync(user, loginDTO.Password);
@@ -70,7 +88,7 @@ namespace EasyShop.API.Controllers
                         // Claims Token
                         var claims = new List<Claim>();
                         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
-                        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+                      //  claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id));
                         claims.Add(new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()));
 
                         // Get Role
@@ -98,13 +116,13 @@ namespace EasyShop.API.Controllers
                             expiration = Token.ValidTo
                         }) ;
                     }
-                    return Unauthorized();    
+                    return Unauthorized("UnAuthorized Customer");    
                 }
                 else
-                    return Unauthorized();
+                    return Unauthorized("UnAuthorized Customer");
             }
             else
-                return Unauthorized();
+                return Unauthorized("UnAuthorized Customer");
         }
     }
 }
