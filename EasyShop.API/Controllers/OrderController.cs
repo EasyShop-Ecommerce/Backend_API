@@ -37,16 +37,16 @@ namespace EasyShop.API.Controllers
                 var orderDTO = new OrderDTO
                 {
                     Date = DateTime.Now,
-                    TotalPrice=order.TotalPrice,
-                    ShipPrice=order.ShipPrice,
+                    TotalPrice = order.TotalPrice,
+                    ShipPrice = order.ShipPrice,
                     Customer = order.Customer.Name,
                     CustomerPhone = order.Customer.Phone,
-                    SellerName =order.Seller.FirstName,
-                    ShipperName=order.Shipper.Name,
-                    PaymentMethod=order.PaymentMethod.Method,
-                    Status=order.Status.StatusName
+                    SellerName = order.Seller.FirstName,
+                   // ShipperName = order.Shipper.Name,
+                    PaymentMethod = order.PaymentMethod.Method,
+                    Status = order.Status.StatusName
                 };
-                foreach(var product in order.OrderDetails)
+                foreach (var product in order.OrderDetails)
                 {
                     orderDTO.Products.Add(product.Product.BrandName);
                 }
@@ -79,7 +79,7 @@ namespace EasyShop.API.Controllers
                 Customer = Order.Customer.Name,
                 CustomerPhone = Order.Customer.Phone,
                 SellerName = Order.Seller.FirstName,
-                ShipperName = Order.Shipper.Name,
+               // ShipperName = Order.Shipper.Name,
                 PaymentMethod = Order.PaymentMethod.Method,
                 Status = Order.Status.StatusName
             };

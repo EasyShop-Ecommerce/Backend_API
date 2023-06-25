@@ -9,6 +9,6 @@ namespace EasyShop.Core.Entities
 		[Required(ErrorMessage ="Store Location Is Required")] 
 		public string Location { get; set; }
 
-		public virtual ICollection<StoreProduct> StoreProducts { get; set; } = new List<StoreProduct>();
+		//public virtual ICollection<StoreProduct> StoreProducts { get; set; } = new List<StoreProduct>();
 	}
 }

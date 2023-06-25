@@ -41,11 +41,11 @@ namespace EasyShop.Infrastructure.Data
             return await Context.SubCategories.AnyAsync(s => s.Id == subCategoryId);
         }
 
-        public async Task<int> AddProduct(Product product)
+        public async Task<Product> AddProduct(Product product)
 		{
 			await Context.Products.AddAsync(product);
-			int rowsAffected = Context.SaveChanges();
-			return rowsAffected;
+			await Context.SaveChangesAsync();
+			return product;
 		}
 	
 		//public async Task<int> UpdateProduct(int id, Product product)
@@ -119,6 +119,12 @@ namespace EasyShop.Infrastructure.Data
 				throw;
 			}
 		}
+
+        public async Task<IEnumerable<ProductImage>> AddRangeAsync(IEnumerable<ProductImage> images)
+        {
+            await Context.AddRangeAsync(images);
+            return images;
+        }
 
     }
 }

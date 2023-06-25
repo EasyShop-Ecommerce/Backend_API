@@ -9,15 +9,10 @@ namespace EasyShop.Core.Entities
 	{
 		public int Id { get; set; }
 
-		//public string Code { get; set; }
 		public string BrandName { get; set; }
 
 		[Required(ErrorMessage ="Please Give Title to the product")]
 		public string Title { get; set; }
-
-		[Required(ErrorMessage ="Please Provide Price to the product")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
-        public decimal Price { get; set; }
 
 		public string Description { get; set; }
 
@@ -33,9 +28,17 @@ namespace EasyShop.Core.Entities
 
         [ForeignKey("SubCategory")]
 		public int SubCategoryId { get; set; }
-		public virtual SubCategory SubCategory{ get; set; }	
+		public virtual SubCategory SubCategory{ get; set; }
 
-        public virtual ICollection<ProductImage> ProductImages { get; set; }
+        [ForeignKey("Shipper")]
+        public int? ShipperId { get; set; }
+        public virtual Shipper Shipper { get; set; }
+
+        public virtual ICollection<ProductImage> ProductImages { get; set; }=new HashSet<ProductImage>();
+
+        public virtual ICollection<ProductSeller> ProductSellers { get; set; } =new HashSet<ProductSeller>();
+
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EasyShop.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class auth : Migration
+    public partial class editDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,7 @@ namespace EasyShop.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CategoryImage = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CategoryName = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -135,19 +134,6 @@ namespace EasyShop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stores",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Stores", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserClaims",
                 columns: table => new
                 {
@@ -234,7 +220,6 @@ namespace EasyShop.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubCategoryName = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SubCategoryImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -282,7 +267,6 @@ namespace EasyShop.Infrastructure.Migrations
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     PaymentMethodId = table.Column<int>(type: "int", nullable: false),
-                    ShipperId = table.Column<int>(type: "int", nullable: false),
                     SellerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -307,12 +291,6 @@ namespace EasyShop.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Shippers_ShipperId",
-                        column: x => x.ShipperId,
-                        principalTable: "Shippers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Orders_Status_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Status",
@@ -328,7 +306,6 @@ namespace EasyShop.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BrandName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Material = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OperatingSystem = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -336,15 +313,15 @@ namespace EasyShop.Infrastructure.Migrations
                     SpecialFeatures = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MemoryStorageCapacity = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubCategoryId = table.Column<int>(type: "int", nullable: false),
-                    SellerId = table.Column<int>(type: "int", nullable: true)
+                    ShipperId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Sellers_SellerId",
-                        column: x => x.SellerId,
-                        principalTable: "Sellers",
+                        name: "FK_Products_Shippers_ShipperId",
+                        column: x => x.ShipperId,
+                        principalTable: "Shippers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_SubCategories_SubCategoryId",
@@ -387,7 +364,8 @@ namespace EasyShop.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -397,6 +375,32 @@ namespace EasyShop.Infrastructure.Migrations
                         name: "FK_ProductImages_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductSellers",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SellerId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductSellers", x => new { x.ProductId, x.SellerId });
+                    table.ForeignKey(
+                        name: "FK_ProductSellers_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductSellers_Sellers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "Sellers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -423,38 +427,6 @@ namespace EasyShop.Infrastructure.Migrations
                         name: "FK_Reviews_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StoreProducts",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    SellerId = table.Column<int>(type: "int", nullable: false),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreProducts", x => new { x.ProductId, x.SellerId, x.StoreId });
-                    table.ForeignKey(
-                        name: "FK_StoreProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StoreProducts_Sellers_SellerId",
-                        column: x => x.SellerId,
-                        principalTable: "Sellers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StoreProducts_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalTable: "Stores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -491,11 +463,6 @@ namespace EasyShop.Infrastructure.Migrations
                 column: "SellerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_ShipperId",
-                table: "Orders",
-                column: "ShipperId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_StatusId",
                 table: "Orders",
                 column: "StatusId");
@@ -506,9 +473,9 @@ namespace EasyShop.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_SellerId",
+                name: "IX_Products_ShipperId",
                 table: "Products",
-                column: "SellerId");
+                column: "ShipperId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SubCategoryId",
@@ -516,19 +483,14 @@ namespace EasyShop.Infrastructure.Migrations
                 column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_CustomerId",
-                table: "Reviews",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StoreProducts_SellerId",
-                table: "StoreProducts",
+                name: "IX_ProductSellers_SellerId",
+                table: "ProductSellers",
                 column: "SellerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreProducts_StoreId",
-                table: "StoreProducts",
-                column: "StoreId");
+                name: "IX_Reviews_CustomerId",
+                table: "Reviews",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_CategoryId",
@@ -555,6 +517,9 @@ namespace EasyShop.Infrastructure.Migrations
                 name: "ProductImages");
 
             migrationBuilder.DropTable(
+                name: "ProductSellers");
+
+            migrationBuilder.DropTable(
                 name: "Reviews");
 
             migrationBuilder.DropTable(
@@ -562,9 +527,6 @@ namespace EasyShop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
-
-            migrationBuilder.DropTable(
-                name: "StoreProducts");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -588,22 +550,19 @@ namespace EasyShop.Infrastructure.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Stores");
-
-            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "PaymentMethods");
 
             migrationBuilder.DropTable(
-                name: "Shippers");
+                name: "Sellers");
 
             migrationBuilder.DropTable(
                 name: "Status");
 
             migrationBuilder.DropTable(
-                name: "Sellers");
+                name: "Shippers");
 
             migrationBuilder.DropTable(
                 name: "SubCategories");

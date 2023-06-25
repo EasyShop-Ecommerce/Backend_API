@@ -32,9 +32,11 @@ namespace EasyShop.Core.Entities
 		public string City { get; set; } = string.Empty;
 		public string Governorate { get; set; } 
 
-		public ICollection<Product> Products { get; set; }= new List<Product>();
-		public ICollection<StoreProduct> StoreProducts { get; set; }= new List<StoreProduct>();
-		public ICollection<Order> Orders { get; set; } = new List<Order>();
-	}
+        public virtual ICollection<ProductSeller> ProductSellers { get; set; } = new HashSet<ProductSeller>();
+
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        //public ICollection<StoreProduct> StoreProducts { get; set; }= new List<StoreProduct>();
+    }
 
 }

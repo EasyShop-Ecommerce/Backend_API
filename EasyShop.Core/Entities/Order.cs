@@ -24,9 +24,9 @@ namespace EasyShop.Core.Entities
 		public int PaymentMethodId { get; set; }
 		public virtual PaymentMethod PaymentMethod { get; set; }
 
-		[ForeignKey("Shipper")]
-		public int ShipperId { get; set; }
-		public virtual Shipper Shipper { get; set; }
+		//[ForeignKey("Shipper")]
+		//public int ShipperId { get; set; }
+		//public virtual Shipper Shipper { get; set; }
 
 		[ForeignKey("Seller")]
 		public int SellerId { get; set; }

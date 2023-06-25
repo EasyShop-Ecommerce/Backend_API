@@ -46,9 +46,9 @@ namespace EasyShop.Infrastructure.Data
 
 		public DbSet<Review> Reviews { get; set; }
 
-		public DbSet<Store> Stores { get; set; }
+		//public DbSet<Store> Stores { get; set; }
 
-		public DbSet<StoreProduct> StoreProducts { get; set; }
+		public DbSet<ProductSeller> ProductSellers { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -70,12 +70,13 @@ namespace EasyShop.Infrastructure.Data
 			modelBuilder.Entity<OrderDetail>()
 						.HasKey(o => new { o.OrderId, o.ProductId });
 
-			modelBuilder.Entity<StoreProduct>()
-					    .HasKey(s => new { s.ProductId, s.SellerId, s.StoreId });
+			modelBuilder.Entity<ProductSeller>()
+					    .HasKey(s => new { s.ProductId, s.SellerId});
+          
 
             modelBuilder.Entity<Category>()
-                      .HasIndex(s => s.CategoryName)
-                      .IsUnique();
+                        .HasIndex(s => s.CategoryName)
+                        .IsUnique();
 
             modelBuilder.Entity<SubCategory>()
                         .HasIndex(s => s.SubCategoryName)

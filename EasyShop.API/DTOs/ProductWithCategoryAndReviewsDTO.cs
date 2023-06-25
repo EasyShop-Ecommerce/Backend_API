@@ -18,6 +18,8 @@ namespace EasyShop.API.DTOs
 
         public string Material { get; set; }
 
+        public string MainImage { get; set; }
+
         public string OperatingSystem { get; set; }
 
         public string HardDiskSize { get; set; }
@@ -34,6 +36,8 @@ namespace EasyShop.API.DTOs
 
         public double ReviewsAverage { get; set; }
 
-        public string seller { get; set; }
+        public List<ProductSellersDTO> Sellers { get; set; }=new List<ProductSellersDTO>();
+
+        public int? ShipperId { get; set; }
     }
 }

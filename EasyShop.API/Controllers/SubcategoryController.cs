@@ -42,7 +42,7 @@ namespace EasyShop.API.Controllers
             subcategoryWithProducts.CategoryId = subcategory.CategoryId;
             subcategoryWithProducts.CategoryName = subcategory.Category!=null? subcategory.Category.CategoryName:"No Category";
             subcategoryWithProducts.Name = subcategory.SubCategoryName;
-            subcategoryWithProducts.Image = subcategory.SubCategoryImage;
+            //subcategoryWithProducts.Image = subcategory.SubCategoryImage;
             foreach (var item in subcategory.Products)
             {
                 subcategoryWithProducts.ProductsIds.Add(item.Id);

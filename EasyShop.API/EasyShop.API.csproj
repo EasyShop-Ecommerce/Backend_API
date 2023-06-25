@@ -29,7 +29,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\Uploads\Category\" />
     <Folder Include="wwwroot\Uploads\SubCategory\" />
-    <Folder Include="wwwroot\Uploads\Product\" />
+    <Folder Include="wwwroot\Uploads\Products\" />
   </ItemGroup>
 
 </Project>
