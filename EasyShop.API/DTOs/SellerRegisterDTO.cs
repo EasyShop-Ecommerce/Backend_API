@@ -2,12 +2,22 @@
 
 namespace EasyShop.API.DTOs
 {
-    public class CustmerRegisterDTO
+    public class SellerRegisterDTO
     {
-
         [Required]
         [RegularExpression("^[a-zA-Z]*$", ErrorMessage = "Invalid Name")]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        [Required]
+        [RegularExpression("^[a-zA-Z]*$", ErrorMessage = "Invalid Name")]
+        public string MiddleName { get; set; }
+        [Required]
+        [RegularExpression("^[a-zA-Z]*$", ErrorMessage = "Invalid Name")]
+        public string LastName { get; set; }
+        [Required]
+        public string BusinessName { get; set; }
+        [Required]
+        [RegularExpression("^([1-9]{1})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})[0-9]{3}([0-9]{1})[0-9]{1}$")]
+        public string SSN { get; set; }
 
         [RegularExpression("^\\S+@\\S+\\.\\S+$", ErrorMessage = "Invalid Email")]
         [Required]
@@ -24,7 +34,7 @@ namespace EasyShop.API.DTOs
         [Required]
         public string Password { get; set; }
         [Required]
-        [Compare("Password",ErrorMessage ="Not Matched")]
+        [Compare("Password", ErrorMessage = "Not Matched")]
         public string ConfirmPassword { get; set; }
     }
 }

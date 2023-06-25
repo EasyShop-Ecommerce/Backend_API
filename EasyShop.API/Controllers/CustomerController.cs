@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using EasyShop.API.DTOs;
 using EasyShop.Core.Entities;
+using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Core.Specifications;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyShop.API.Controllers
@@ -14,11 +16,14 @@ namespace EasyShop.API.Controllers
 	{
 		private readonly IGenericRepository<Customer> CustomerRepo;
         private readonly IMapper mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CustomerController(IGenericRepository<Customer> _CustomerRepo, IMapper _mapper)
+       
+        public CustomerController(IGenericRepository<Customer> _CustomerRepo, IMapper _mapper,UserManager<AppUser> userManager)
 		{
             CustomerRepo = _CustomerRepo;
             mapper= _mapper;
+            _userManager = userManager;
 		}
 
         [HttpGet]
@@ -136,11 +141,33 @@ namespace EasyShop.API.Controllers
 			{
                 try
                 {
-                    Customer c = await CustomerRepo.DeleteAsync(id);
-                    if (c == null)
-                        return NotFound("This Customer Not Found");
+                    Customer customer = await CustomerRepo.GetByIdAsync(id);   
+                    var user =await  _userManager.FindByNameAsync(customer.Name);
+
+                    if (user != null)
+                    {
+                        // Delete the user using the UserManager
+                        var result =await _userManager.DeleteAsync(user);
+
+                        if (result !=null)
+                        {
+                            Customer c = await CustomerRepo.DeleteAsync(id);
+                            return Ok("User deleted successfully");
+                        }
+                        else
+                        {
+                            // Handle any errors that occurred during deletion
+                            return Ok("User Notdeleted successfully");
+
+                        }
+                    }
                     else
-                        return StatusCode(200,$"This Customer : {c.Name} is Deleted");
+                    {
+                        // User not found
+                        return Ok("User Not Found");
+
+                    }
+
                 }
                 catch (ArgumentException ex)
                 {

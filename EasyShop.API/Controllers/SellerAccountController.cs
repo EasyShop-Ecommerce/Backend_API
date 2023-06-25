@@ -1,12 +1,10 @@
 ﻿using EasyShop.API.DTOs;
 using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
-using EasyShop.Core.Interfaces;
 using EasyShop.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,54 +14,65 @@ namespace EasyShop.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class CustomerAccountController : ControllerBase
+    public class SellerAccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _config;
         private readonly DBContext _context;
-        
 
-        public CustomerAccountController(UserManager<AppUser> userManager ,IConfiguration config,DBContext context)
+
+        public SellerAccountController(UserManager<AppUser> userManager, IConfiguration config, DBContext context)
         {
             _userManager = userManager;
-            _config=config;
+            _config = config;
             _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register (CustmerRegisterDTO registerDTO)
+        public async Task<ActionResult> Register(SellerRegisterDTO registerDTO)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var customer = new Customer()
+                var seller = new Seller()
                 {
-                    Name = registerDTO.Name,
+                    FirstName = registerDTO.FirstName,
+                    MiddleName= registerDTO.MiddleName,
+                    LastName = registerDTO.LastName,
                     Phone = registerDTO.Phone,
                     Email = registerDTO.Email,
+                    BusinessName=registerDTO.BusinessName,
                     City = registerDTO.City,
-                    Government = registerDTO.Government,
+                    Governorate = registerDTO.Government,
                     Street = registerDTO.Street,
                 };
-                _context.Customers.Add(customer);
+                _context.Sellers.Add(seller);
                 await _context.SaveChangesAsync();
 
                 AppUser user = new AppUser();
-                user.UserName = registerDTO.Name;
-                user.Phone= registerDTO.Phone;
+                user.UserName = registerDTO.FirstName;
+                user.MiddleName = registerDTO.MiddleName;
+                user.LastName = registerDTO.LastName;
+                user.BusinessName = registerDTO.BusinessName;
+                user.Phone = registerDTO.Phone;
                 user.Email = registerDTO.Email;
                 user.Street = registerDTO.Street;
                 user.City = registerDTO.City;
                 user.Government = registerDTO.Government;
-                user.CustomerID = customer.Id;
-                user.SellerID = null;
-                var result= await _userManager.CreateAsync(user,registerDTO.Password);
+                user.SellerID = seller.Id;
+                user.CustomerID = null;
+                var result = await _userManager.CreateAsync(user, registerDTO.Password);
                 if (result.Succeeded)
                 {
 
-                    return Ok(customer);
+                    return Ok(seller);
                 }
                 else
                 {
+                    //var errors=new List<IdentityError>();
+                    //foreach(var error in result.Errors)
+                    //{
+                    //    errors.Add(error);
+                    //}
                     return BadRequest(result.Errors);
                 }
             }
@@ -75,30 +84,30 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login (LoginDTO loginDTO)
+        public async Task<ActionResult> Login(LoginDTO loginDTO)
         {
             if (ModelState.IsValid)
             {
-                var user =await  _userManager.FindByEmailAsync(loginDTO.Email);
-                if(user != null)
+                var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+                if (user != null)
                 {
-                    bool found=await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+                    bool found = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
                     if (found)
                     {
                         // Claims Token
                         var claims = new List<Claim>();
                         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
-                      //  claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id));
-                        claims.Add(new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()));
+                        //  claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id));
+                        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
                         // Get Role
-                        var roles=await _userManager.GetRolesAsync(user);
+                        var roles = await _userManager.GetRolesAsync(user);
                         foreach (var role in roles)
                         {
                             claims.Add(new Claim(ClaimTypes.Role, role));
                         }
 
-                        SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"])); 
+                        SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
 
                         SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -106,23 +115,23 @@ namespace EasyShop.API.Controllers
                         JwtSecurityToken Token = new JwtSecurityToken(
                             issuer: _config["JWT:ValidIssuer"],
                             audience: _config["JWT:ValidAudience"],
-                            claims:claims,
-                            expires:DateTime.Now.AddHours(2),
-                            signingCredentials:credentials
+                            claims: claims,
+                            expires: DateTime.Now.AddHours(2),
+                            signingCredentials: credentials
                             );
                         return Ok(new
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(Token),
                             expiration = Token.ValidTo
-                        }) ;
+                        });
                     }
-                    return Unauthorized("UnAuthorized Customer");    
+                    return Unauthorized("UnAuthorized Seller");
                 }
                 else
-                    return Unauthorized("UnAuthorized Customer");
+                    return Unauthorized("UnAuthorized Seller");
             }
             else
-                return Unauthorized("UnAuthorized Customer");
+                return Unauthorized("UnAuthorized Seller");
         }
     }
 }

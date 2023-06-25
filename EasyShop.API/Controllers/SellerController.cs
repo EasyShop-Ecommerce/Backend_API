@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using EasyShop.API.DTOs;
 using EasyShop.Core.Entities;
+using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Core.Specifications;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyShop.API.Controllers
@@ -14,11 +16,14 @@ namespace EasyShop.API.Controllers
 	{
 		private readonly IGenericRepository<Seller> SellerRepo;
         private readonly IMapper mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public SellerController(IGenericRepository<Seller> _SellerRepo, IMapper _mapper)
+
+        public SellerController(IGenericRepository<Seller> _SellerRepo, IMapper _mapper, UserManager<AppUser> userManager)
 		{
             SellerRepo = _SellerRepo;
             mapper= _mapper;
+            _userManager= userManager;
 		}
 
 
@@ -155,26 +160,67 @@ namespace EasyShop.API.Controllers
 		}
 
 
-		[HttpDelete("{id:int}")]
-		public async Task<ActionResult<Seller>> DeleteSeller(int id)
-		{
-	       if(id > 0)
-			{
+        //[HttpDelete("{id:int}")]
+        //public async Task<ActionResult<Seller>> DeleteSeller(int id)
+        //{
+        //      if(id > 0)
+        //	{
+        //              try
+        //              {
+        //                  Seller c = await SellerRepo.DeleteAsync(id);
+        //                  if (c == null)
+        //                      return NotFound("This Seller Not Found");
+        //                  else
+        //                      return StatusCode(200,$"This Seller : {c.FirstName} is Deleted");
+        //              }
+        //              catch (ArgumentException ex)
+        //              {
+        //                  return BadRequest(ex.Message);
+        //              }
+        //          }
+        //   else
+        //		return BadRequest("Invalid SellerID");
+        //}
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Seller>> DeleteSeller(int id)
+        {
+            if (id > 0)
+            {
                 try
                 {
-                    Seller c = await SellerRepo.DeleteAsync(id);
-                    if (c == null)
-                        return NotFound("This Seller Not Found");
+                    Seller seller = await SellerRepo.GetByIdAsync(id);
+                    var user = await _userManager.FindByNameAsync(seller.FirstName);
+
+                    if (user != null)
+                    {
+                        // Delete the user using the UserManager
+                        var result = await _userManager.DeleteAsync(user);
+
+                        if (result != null)
+                        {
+                            Seller c = await SellerRepo.DeleteAsync(id);
+                            return Ok("User deleted successfully");
+                        }
+                        else
+                        {
+                            // Handle any errors that occurred during deletion
+                            return Ok("User Notdeleted successfully");
+                        }
+                    }
                     else
-                        return StatusCode(200,$"This Seller : {c.FirstName} is Deleted");
+                    {
+                        // User not found
+                        return Ok("User Not Found");
+                    }
                 }
                 catch (ArgumentException ex)
                 {
                     return BadRequest(ex.Message);
                 }
             }
-		   else
-				return BadRequest("Invalid SellerID");
-		}
+            else
+                return BadRequest("Invalid SellerID");
+        }
     }
 }
