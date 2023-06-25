@@ -76,12 +76,11 @@ namespace EasyShop.Infrastructure.Data
 
 
         public async Task<int> UpdateProduct(int id, Product product)
-        {
-            var entry = Context.Entry(product);
-            entry.State = EntityState.Modified;
-
+        {           
             try
             {
+                var entry = Context.Entry(product);
+                entry.State = EntityState.Modified;
                 int rowsAffected = await Context.SaveChangesAsync();
                 return rowsAffected;
             }
@@ -90,7 +89,6 @@ namespace EasyShop.Infrastructure.Data
                 throw;
             }
         }
-
 
         public async Task<int> DeleteProduct(int id)
 		{

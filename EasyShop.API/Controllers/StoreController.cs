@@ -22,7 +22,8 @@ namespace EasyShop.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Store>>> GetAllStores() 
         {
-            return Ok(await storeRepo.GetAllAsync());
+            IReadOnlyList<Store> stores = await storeRepo.GetAllAsync();
+            return Ok();
         }
 
        
@@ -63,9 +64,9 @@ namespace EasyShop.API.Controllers
 
             try
             {
-                await storeRepo.AddAsync(store);
+                Store createdStore = await storeRepo.AddAsync(store);
                 string url = Url.Link("GetOneStoreRoute", new { id = store.Id });
-                return Created(url, "Store Added Successfully");
+                return Created(url, createdStore);
             }
             catch (Exception ex)
             {
@@ -77,10 +78,8 @@ namespace EasyShop.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStore(int id, Store store)
         {
-            if (id != store.Id)
-            {
-                return BadRequest();
-            }
+            if(store== null) return BadRequest();
+            if (id != store.Id) return BadRequest();
 
             if (ModelState.IsValid)
             {
@@ -88,10 +87,10 @@ namespace EasyShop.API.Controllers
                 {
                     string result = await storeRepo.EditAsync(id, store);
 
-                    if (result == "Entity not found.")
-                    {
-                        return NotFound("The specified store does not exist.");
-                    }
+                    //if (result == "Entity not found.")
+                    //{
+                    //    return NotFound("The specified store does not exist.");
+                    //}
 
                     return Ok("Store Updated Successfully");
                 }

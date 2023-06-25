@@ -74,9 +74,6 @@ namespace EasyShop.API.Controllers
             return Ok(SellerDTOs);
         }
 
-
-
-
         [HttpGet("{id:int}", Name = "GetOneSellerRoute")]
         public async Task<ActionResult<SellerDTO>> GetSeller(int id)
         {
@@ -120,17 +117,15 @@ namespace EasyShop.API.Controllers
             return Ok(SellerDTO);
         }
 
-       
-
         [HttpPost]
 		public async Task<ActionResult> AddSeller(Seller Seller)
 		{
 			if(ModelState.IsValid) 
 			{
-				String result=await SellerRepo.AddAsync(Seller);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+				Seller createdSeller=await SellerRepo.AddAsync(Seller);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdSeller}");
                 string url = Url.Link("GetOneSellerRoute",new {id=Seller.Id});
-				return Created(url, $"This Seller : {Seller.FirstName} is Added");
+				return Created(url, createdSeller);
 			}
 			return BadRequest(ModelState);
 		}

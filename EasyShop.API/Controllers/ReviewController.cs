@@ -35,7 +35,7 @@ namespace EasyShop.API.Controllers
             }
         }
 
-        [HttpGet("product/{productId:int}/customer/{customerId:int}")]
+        [HttpGet("product/{productId:int}/customer/{customerId:int}",Name = "GetOneReviewRoute")]
         public async Task<IActionResult> GetReview(int productId, int customerId)
         {
             try
@@ -57,6 +57,7 @@ namespace EasyShop.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReview(Review review)
         {
+            if(review == null) return BadRequest();
             try
             {
                 if (!ModelState.IsValid)
@@ -64,8 +65,8 @@ namespace EasyShop.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                // Add the review to the repository
                 var result = await _reviewRepository.AddAsync(review);
+                string url = Url.Link("GetOneReviewRoute", new {productId=review.ProductId,customerId=review.CustomerId });
                 return Ok(result);
             }
             catch (Exception ex)
@@ -79,6 +80,7 @@ namespace EasyShop.API.Controllers
         {
             try
             {
+                if (review==null) return BadRequest();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -86,10 +88,10 @@ namespace EasyShop.API.Controllers
 
                 var result = await _reviewRepository.UpdateAsync(review, productId, customerId);
 
-                if (result == "Entity not found.")
-                {
-                    return NotFound("The specified product review does not exist.");
-                }
+                //if (result == "Entity not found.")
+                //{
+                //    return NotFound("The specified product review does not exist.");
+                //}
 
                 return Ok("Review Updated Successfully");
             }

@@ -106,10 +106,10 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                String result = await ShipperRepo.AddAsync(Shipper);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+                Shipper createdShipper= await ShipperRepo.AddAsync(Shipper);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdShipper}");
                 string url = Url.Link("GetOneShipperRoute", new { id = Shipper.Id });
-                return Created(url, $"This Shipper : {Shipper.Name} is Added");
+                return Created(url, createdShipper);
             }
             return BadRequest(ModelState);
         }

@@ -62,8 +62,6 @@ namespace EasyShop.API.Controllers
             return Ok(OrderDTOs);
         }
 
-
-
         [HttpGet("{id:int}", Name = "GetOneOrderRoute")]
         public async Task<ActionResult<OrderDTO>> GetOrder(int id)
         {
@@ -105,10 +103,10 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                String result = await OrderRepo.AddAsync(Order);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+                Order createdOrder = await OrderRepo.AddAsync(Order);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdOrder}");
                 string url = Url.Link("GetOneOrderRoute", new { id = Order.Id });
-                return Created(url, $"This Order : {Order.Id} is Added");
+                return Created(url, createdOrder);
             }
             return BadRequest(ModelState);
         }

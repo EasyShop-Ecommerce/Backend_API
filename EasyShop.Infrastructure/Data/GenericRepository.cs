@@ -19,11 +19,25 @@ namespace EasyShop.Infrastructure.Data
         {
             Context = dBContext;
         }
-        public async Task<string> AddAsync(T t)
+        //public async Task<string> AddAsync(T t)
+        //{
+        //    await Context.Set<T>().AddAsync(t);
+        //    int row = Context.SaveChanges();
+        //    return ($"NO.Rows is affected = {row}");
+        //}
+
+        public async Task<T> AddAsync(T entity)
         {
-            await Context.Set<T>().AddAsync(t);
-            int row = Context.SaveChanges();
-            return ($"NO.Rows is affected = {row}");
+            try
+            {
+                Context.Set<T>().Add(entity);
+                await Context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while adding the entity.", ex);
+            }
         }
 
         public async Task<T> DeleteAsync(int Id)
@@ -56,8 +70,6 @@ namespace EasyShop.Infrastructure.Data
             return c;
         }
 
-        
-
         public async Task<string> EditAsync(int Id, T t)
         {
 
@@ -78,40 +90,32 @@ namespace EasyShop.Infrastructure.Data
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-
             return await Context.Set<T>().ToListAsync();
-
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-
             return await Context.Set<T>().FindAsync(id);
         }
 
         public async Task<T> GetByIdAsync(int id1, int id2)
         {
             return await Context.Set<T>().FindAsync(id1,id2);
-
         }
 
         public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
         {
-
            return await ApplySpecification(spec).FirstOrDefaultAsync();
-
         }
 
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).ToListAsync();
-
         }
         
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
             return SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), spec);
-
         }
 
         public async Task<T> GetByIdAsync(params int[] ids)
@@ -159,19 +163,7 @@ namespace EasyShop.Infrastructure.Data
 
 
 
-        //public async Task<T> AddAsync(T entity)
-        //{
-        //    try
-        //    {
-        //        context.Set<T>().Add(entity);
-        //        await context.SaveChangesAsync();
-        //        return entity;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("An error occurred while adding the entity.", ex);
-        //    }
-        //}
+        
 
 
 

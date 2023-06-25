@@ -96,10 +96,10 @@ namespace EasyShop.API.Controllers
 		{
 			if(ModelState.IsValid) 
 			{
-				String result=await CustomerRepo.AddAsync(customer);
-                await Console.Out.WriteLineAsync($"AddResult=>{result}");
+				Customer createdCustomer=await CustomerRepo.AddAsync(customer);
+                await Console.Out.WriteLineAsync($"AddResult=>{createdCustomer}");
                 string url = Url.Link("GetOneCustomerRoute",new {id=customer.Id});
-				return Created(url, $"This Customer : {customer.Name} is Added");
+				return Created(url, createdCustomer);
 			}
 			return BadRequest(ModelState);
 		}
