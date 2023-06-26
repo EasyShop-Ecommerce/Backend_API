@@ -24,7 +24,9 @@ namespace EasyShop.Infrastructure.Data
 				                .Include(p => p.SubCategory)
 								.ThenInclude(p => p.Category)
 								.Include(p=>p.Reviews)
-				                .ToListAsync();
+                                .Include(p => p.ProductSellers)
+								.Include(p=>p.Shipper)
+                                .ToListAsync();
 		}
 
 		public async Task<Product> GetProductById(int id)
@@ -33,7 +35,9 @@ namespace EasyShop.Infrastructure.Data
 								.Include(p=>p.SubCategory)
 								.ThenInclude(p => p.Category)
 								.Include(p => p.Reviews)
-								.SingleOrDefaultAsync(p => p.Id == id);
+								.Include(p=>p.ProductSellers)
+                                .Include(p => p.Shipper)
+                                .SingleOrDefaultAsync(p => p.Id == id);
 		}
 
         public async Task<bool> SubCategoryExists(int subCategoryId)
@@ -120,11 +124,36 @@ namespace EasyShop.Infrastructure.Data
 			}
 		}
 
-        public async Task<IEnumerable<ProductImage>> AddRangeAsync(IEnumerable<ProductImage> images)
+        public async Task<ICollection<ProductImage>> AddRangeAsync(ICollection<ProductImage> images)
         {
             await Context.AddRangeAsync(images);
+            await Context.SaveChangesAsync();
             return images;
         }
 
+        public async Task<ProductImage> AddProductImage(ProductImage productImage)
+        {
+            await Context.ProductImages.AddAsync(productImage);
+            await Context.SaveChangesAsync();
+            return productImage;
+        }
+
+        public List<ProductImage> GetProductImages(int productId, string color)
+        {
+            var product = Context.Products
+										.Include(p => p.ProductImages)
+										.FirstOrDefault(p => p.Id == productId);
+
+            if (product != null)
+            {
+                var images = product.ProductImages
+												   .Where(pi => pi.Color == color)
+												   .ToList();
+
+                return images;
+            }
+
+            return null; 
+        }
     }
 }

@@ -63,8 +63,8 @@ namespace EasyShop.Infrastructure.Data
             modelBuilder.Entity<IdentityUserToken<string>>()
 				.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
 
-            modelBuilder.Entity<ProductImage>()
-						 .HasKey(p => new { p.Id, p.ProductId });
+       //     modelBuilder.Entity<ProductImage>()
+						 //.HasKey(p => new { p.Id, p.ProductId });
 
 			modelBuilder.Entity<Review>()
 						.HasKey(r => new { r.ProductId, r.CustomerId });
