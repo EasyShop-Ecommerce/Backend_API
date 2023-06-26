@@ -21,7 +21,6 @@ namespace EasyShop.API.Controllers
         }
 
 
-
         [HttpGet]
         public async Task<ActionResult<List<OrderDetailsDTO>>> GetAllOrderDetailss()
         {
@@ -49,7 +48,6 @@ namespace EasyShop.API.Controllers
         }
 
 
-
         [HttpGet("{id1:int}/{id2:int}", Name = "GetOneOrderDetailsRoute")]
         public async Task<ActionResult<OrderDetailsDTO>> GetOrderDetails(int id1,int id2)
         {
@@ -67,7 +65,6 @@ namespace EasyShop.API.Controllers
             };
             return Ok(OrderDetailsDTO);
         }
-
 
 
         [HttpPost]

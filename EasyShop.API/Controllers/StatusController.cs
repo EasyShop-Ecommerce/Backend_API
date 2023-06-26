@@ -21,8 +21,6 @@ namespace EasyShop.API.Controllers
             mapper = _mapper;
         }
 
-
-
         [HttpGet]
         public async Task<ActionResult<List<StatusDTO>>> GetAllStatuss()
         {
@@ -53,7 +51,6 @@ namespace EasyShop.API.Controllers
         }
 
 
-
         [HttpGet("{id:int}", Name = "GetOneStatusRoute")]
         public async Task<ActionResult<StatusDTO>> GetStatus(int id)
         {
@@ -77,7 +74,6 @@ namespace EasyShop.API.Controllers
 
             return Ok(StatusDTO);
         }
-
 
 
         [HttpPost]

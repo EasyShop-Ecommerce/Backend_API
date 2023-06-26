@@ -54,7 +54,7 @@ namespace EasyShop.API
             });
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-			builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
+			//builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 			builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 			
             builder.Services.AddScoped(typeof (IGenericRepository<>), typeof(GenericRepository<>));
@@ -78,9 +78,9 @@ namespace EasyShop.API
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+            app.UseStaticFiles();
 
             app.UseCors(MyAllowSpecificOrigins);
-            app.UseStaticFiles();
 			app.UseHttpsRedirection();
 
 

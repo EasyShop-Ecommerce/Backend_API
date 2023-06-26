@@ -26,15 +26,21 @@ namespace EasyShop.Core.Entities
         [RegularExpression("^\\S+@\\S+\\.\\S+$", ErrorMessage = "Invalid Email")]
         [Required]
         public string Email { get; set; } = string.Empty;
-		[Required]
-		public string Street { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
+        [Required]
+        public string Street { get; set; }
 		[Required]
 		public string City { get; set; } = string.Empty;
 		public string Governorate { get; set; } 
 
-		public ICollection<Product> Products { get; set; }= new List<Product>();
-		public ICollection<StoreProduct> StoreProducts { get; set; }= new List<StoreProduct>();
-		public ICollection<Order> Orders { get; set; } = new List<Order>();
-	}
+        public virtual ICollection<ProductSeller> ProductSellers { get; set; } = new HashSet<ProductSeller>();
+
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        //public ICollection<StoreProduct> StoreProducts { get; set; }= new List<StoreProduct>();
+    }
 
 }

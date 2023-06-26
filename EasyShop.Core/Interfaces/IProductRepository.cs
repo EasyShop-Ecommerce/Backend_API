@@ -14,12 +14,18 @@ namespace EasyShop.Core.Interfaces
 
 		Task<Product> GetProductById(int id);	
 
-		Task<int> AddProduct(Product product);
+		Task<Product> AddProduct(Product product);
 
         Task<bool> SubCategoryExists(int subCategoryId);
 
         Task<int> UpdateProduct(int id,Product product);
 
 		Task<int> DeleteProduct(int id);
-	}
+
+        Task<ICollection<ProductImage>> AddRangeAsync(ICollection<ProductImage> images);
+
+        Task<ProductImage> AddProductImage(ProductImage productImage);
+
+		List<ProductImage> GetProductImages(int productId,string color);
+    }
 }

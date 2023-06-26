@@ -41,20 +41,25 @@ namespace EasyShop.API.Controllers
 
                 };
 
-                foreach (var order in shipper.Orders)
+                foreach (var product in shipper.Products)
                 {
-                    shipperDTO.orders.Add(order.Date);
+                    shipperDTO.ShipperProducts.Add(product.Id);
                 }
 
-                foreach (var order in shipper.Orders)
-                {
-                    shipperDTO.ordersPrice.Add(order.TotalPrice);
-                }
+                //foreach (var order in shipper.Orders)
+                //{
+                //    shipperDTO.orders.Add(order.Date);
+                //}
 
-                foreach (var order in shipper.Orders)
-                {
-                    shipperDTO.ordersShip.Add(order.ShipPrice);
-                }
+                //foreach (var order in shipper.Orders)
+                //{
+                //    shipperDTO.ordersPrice.Add(order.TotalPrice);
+                //}
+
+                //foreach (var order in shipper.Orders)
+                //{
+                //    shipperDTO.ordersShip.Add(order.ShipPrice);
+                //}
 
                 ShipperDTOs.Add(shipperDTO);
             }
@@ -80,20 +85,25 @@ namespace EasyShop.API.Controllers
 
             };
 
-            foreach (var order in Shipper.Orders)
+            foreach (var product in Shipper.Products)
             {
-                ShipperDTO.orders.Add(order.Date);
+                ShipperDTO.ShipperProducts.Add(product.Id);
             }
 
-            foreach (var order in Shipper.Orders)
-            {
-                ShipperDTO.ordersPrice.Add(order.TotalPrice);
-            }
+            //foreach (var order in Shipper.Orders)
+            //{
+            //    ShipperDTO.orders.Add(order.Date);
+            //}
 
-            foreach (var order in Shipper.Orders)
-            {
-                ShipperDTO.ordersShip.Add(order.ShipPrice);
-            }
+            //foreach (var order in Shipper.Orders)
+            //{
+            //    ShipperDTO.ordersPrice.Add(order.TotalPrice);
+            //}
+
+            //foreach (var order in Shipper.Orders)
+            //{
+            //    ShipperDTO.ordersShip.Add(order.ShipPrice);
+            //}
 
 
             return Ok(ShipperDTO);
@@ -106,7 +116,7 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                Shipper createdShipper= await ShipperRepo.AddAsync(Shipper);
+                Shipper createdShipper = await ShipperRepo.AddAsync(Shipper);
                 await Console.Out.WriteLineAsync($"AddResult=>{createdShipper}");
                 string url = Url.Link("GetOneShipperRoute", new { id = Shipper.Id });
                 return Created(url, createdShipper);

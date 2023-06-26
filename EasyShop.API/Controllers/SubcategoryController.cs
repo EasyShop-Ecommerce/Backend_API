@@ -20,14 +20,14 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Category>>> GetAllSubCategories()
+        public async Task<ActionResult<IReadOnlyList<SubCategory>>> GetAllSubCategories()
         {
-            return Ok(await subcategoryRepo.GetAllAsync());
+            return Ok (await subcategoryRepo.GetAllAsync());        
         }
 
         [HttpGet("{id:int}", Name = "GetOneSubcategoryRoute")]
 
-        public async Task<ActionResult<CategoryWithSubcategories>> GetSubCategory(int id)
+        public async Task<ActionResult<SubCategory>> GetSubCategory(int id)
         {
             var spec = new GetProductsOfSubcategory(id);
             SubCategory subcategory = await subcategoryRepo.GetEntityWithSpec(spec);
@@ -42,7 +42,7 @@ namespace EasyShop.API.Controllers
             subcategoryWithProducts.CategoryId = subcategory.CategoryId;
             subcategoryWithProducts.CategoryName = subcategory.Category!=null? subcategory.Category.CategoryName:"No Category";
             subcategoryWithProducts.Name = subcategory.SubCategoryName;
-            subcategoryWithProducts.Image = subcategory.SubCategoryImage;
+            //subcategoryWithProducts.Image = subcategory.SubCategoryImage;
             foreach (var item in subcategory.Products)
             {
                 subcategoryWithProducts.ProductsIds.Add(item.Id);

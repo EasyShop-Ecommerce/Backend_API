@@ -10,10 +10,10 @@ namespace EasyShop.Core.Entities
         [Required(ErrorMessage = "SubCategory Name Is Required")]
         public string SubCategoryName { get; set; }
 
-        [Required(ErrorMessage = "SubCategory Image Is Required")]
-        [RegularExpression(@"([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png)$",
-            ErrorMessage = "Invalid image format. Only JPG, JPEG, and PNG formats are allowed.")]
-        public string SubCategoryImage { get; set; }
+        //[Required(ErrorMessage = "SubCategory Image Is Required")]
+        //[RegularExpression(@"([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png)$",
+        //    ErrorMessage = "Invalid image format. Only JPG, JPEG, and PNG formats are allowed.")]
+        //public string SubCategoryImage { get; set; }
 
         [ForeignKey("Category")]
 		public int CategoryId { get; set; }

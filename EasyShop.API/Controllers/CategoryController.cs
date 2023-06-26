@@ -42,7 +42,7 @@ namespace EasyShop.API.Controllers
             CategoryWithSubcategories categoryWithSubcategories = new CategoryWithSubcategories();
             categoryWithSubcategories.CategoryId = id;
             categoryWithSubcategories.Name = category.CategoryName;
-            categoryWithSubcategories.Image = category.CategoryImage;
+            //categoryWithSubcategories.Image = category.CategoryImage;
 
             foreach (var item in category.SubCategories)
             {
@@ -171,7 +171,7 @@ namespace EasyShop.API.Controllers
         {
             Console.WriteLine(environment.WebRootPath + "\\Uploads\\Category\\" + filename);
             return environment.WebRootPath+"\\Uploads\\Category\\"+ filename;
-        }
+        } 
 
         [NonAction]
         private string GetImageByCategory(int categoryId )
