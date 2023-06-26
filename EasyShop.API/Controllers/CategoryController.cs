@@ -171,7 +171,7 @@ namespace EasyShop.API.Controllers
         {
             Console.WriteLine(environment.WebRootPath + "\\Uploads\\Category\\" + filename);
             return environment.WebRootPath+"\\Uploads\\Category\\"+ filename;
-        }
+        } 
 
         [NonAction]
         private string GetImageByCategory(int categoryId )

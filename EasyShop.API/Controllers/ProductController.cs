@@ -6,7 +6,9 @@ using EasyShop.Core.Specifications;
 using EasyShop.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Compression;
 using System.Reflection.Metadata.Ecma335;
 
 namespace EasyShop.API.Controllers
@@ -42,10 +44,13 @@ namespace EasyShop.API.Controllers
                 MemoryStorageCapacity = p.MemoryStorageCapacity ?? null,
                 SpecialFeatures = p.SpecialFeatures ?? null,
                 SubCategory = p.SubCategory != null ? p.SubCategory.SubCategoryName : null,
+                SubCategoryId=p.SubCategoryId,
                 Category = p.SubCategory != null ? p.SubCategory.Category?.CategoryName : null,
-                ShipperId=p.ShipperId,
+                CategoryId = p.SubCategory != null ? p.SubCategory.Category?.Id : null,
+                ShipperId =p.ShipperId,
                 Sellers = p.ProductSellers != null ? p.ProductSellers.Select(ps => new ProductSellersDTO
                 {
+                    ProductId=ps.ProductId,
                     SellerId = ps.SellerId,
                     ProductQuantity=ps.Quantity,
                     Price = ps.Price,
@@ -78,9 +83,12 @@ namespace EasyShop.API.Controllers
                 MemoryStorageCapacity = productToReturn.MemoryStorageCapacity ?? null,
                 SpecialFeatures = productToReturn.SpecialFeatures ?? null,
                 SubCategory = productToReturn.SubCategory != null ? productToReturn.SubCategory.SubCategoryName : null,
+                SubCategoryId = productToReturn.SubCategoryId,
                 Category = productToReturn.SubCategory != null ? productToReturn.SubCategory.Category?.CategoryName : null,
+                CategoryId = productToReturn.SubCategory != null ? productToReturn.SubCategory.Category?.Id : null,
                 Sellers = productToReturn.ProductSellers != null ? productToReturn.ProductSellers.Select(ps => new ProductSellersDTO
                 {
+                    ProductId=id,
                     SellerId = ps.SellerId,
                     ProductQuantity = ps.Quantity,
                     Price = ps.Price,
@@ -91,87 +99,88 @@ namespace EasyShop.API.Controllers
             return Ok(product);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> AddProduct(Product product)
+        {
+            if (product == null) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                if (!await productRepo.SubCategoryExists(product.SubCategoryId))
+                {
+                    ModelState.AddModelError("SubCategoryId", "Invalid SubCategory ID");
+                    return BadRequest(ModelState);
+                }
+
+                await productRepo.AddProduct(product);
+                string url = Url.Link("GetOneProductRoute", new { id = product.Id });
+                return Created(url, product);
+            }
+            return BadRequest(ModelState);
+        }
+
+        #region Trying Adding Product Image With Product Data
 
         //[HttpPost]
-        //public async Task<ActionResult> AddProduct(Product product)
+        //public async Task<ActionResult<ProductWithCategoryAndReviewsDTO>> Post([FromForm] PostProductDTO model)
         //{
-        //    if (product == null) return BadRequest();
-        //    if (ModelState.IsValid)
+        //    if (model is null)
+        //        return BadRequest();
+
+        //    var product = new Product()
         //    {
-        //        // Check if the specified SubCategoryId exists
-        //        if (!await productRepo.SubCategoryExists(product.SubCategoryId))
-        //        {
-        //            ModelState.AddModelError("SubCategoryId", "Invalid SubCategory ID");
-        //            return BadRequest(ModelState);
-        //        }
+        //        BrandName = model.BrandName,
+        //        Title = model.Title,
+        //        Description = model.Description,
+        //        Material = model.Material,
+        //        //Price = model.Price,
+        //        OperatingSystem = model.OperatingSystem,
+        //        HardDiskSize = model.HardDiskSize,
+        //        MemoryStorageCapacity = model.MemoryStorageCapacity,
+        //        SpecialFeatures = model.SpecialFeatures,
+        //        SubCategoryId = model.SubCategoryId,
+        //        ShipperId=model.ShipperId,
+        //    };
 
-        //        await productRepo.AddProduct(product);
-        //        string url = Url.Link("GetOneProductRoute", new { id = product.Id });
-        //        return Created(url, product);
-        //    }
-        //    return BadRequest(ModelState);
+
+        //    product = await productRepo.AddProduct(product);
+
+        //    string wwwPath = environment.WebRootPath;
+
+        //    if (string.IsNullOrEmpty(wwwPath))
+        //        return StatusCode(500, $"This Path {wwwPath} does not exist");
+
+        //    if (model.ImagesOfProduct is null)
+        //        return BadRequest("You Must Enter At List One Image");
+
+
+        //    var images = await FileUploader.UploadProductImages(product.Id, model.ImagesOfProduct, wwwPath);
+        //    var mainImage = images.FirstOrDefault();
+        //    mainImage.IsDefault = true;
+
+        //    await productRepo.AddRangeAsync(images);
+
+        //    var createdProduct = new ProductWithCategoryAndReviewsDTO
+        //    {
+        //        Id = product.Id,
+        //        BrandName = product.BrandName,
+        //        Title = product.Title,
+        //        Description = product.Description,
+        //        Material = product.Material,
+        //        //Price = product.Price,
+        //        OperatingSystem = product.OperatingSystem,
+        //        HardDiskSize = product.HardDiskSize,
+        //        MemoryStorageCapacity = product.MemoryStorageCapacity,
+        //        SpecialFeatures = product.SpecialFeatures,
+        //        SubCategory = product.SubCategory != null ? product.SubCategory.SubCategoryName : null,
+        //        Category = product.SubCategory != null ? product.SubCategory.Category?.CategoryName : null,
+        //        ReviewsAverage = product.ReviewsAverage,
+        //        ReviewsCount = product.ReviewsCount,
+        //    };
+        //    createdProduct.MainImage = mainImage.ImagePath;
+
+        //    return Ok(createdProduct);
         //}
-
-        [HttpPost]
-        public async Task<ActionResult<ProductWithCategoryAndReviewsDTO>> Post([FromForm] PostProductDTO model)
-        {
-            if (model is null)
-                return BadRequest();
-
-            var product = new Product()
-            {
-                BrandName = model.BrandName,
-                Title = model.Title,
-                Description = model.Description,
-                Material = model.Material,
-                //Price = model.Price,
-                OperatingSystem = model.OperatingSystem,
-                HardDiskSize = model.HardDiskSize,
-                MemoryStorageCapacity = model.MemoryStorageCapacity,
-                SpecialFeatures = model.SpecialFeatures,
-                SubCategoryId = model.SubCategoryId,
-                ShipperId=model.ShipperId,
-            };
-
-
-            product = await productRepo.AddProduct(product);
-
-            string wwwPath = environment.WebRootPath;
-
-            if (string.IsNullOrEmpty(wwwPath))
-                return StatusCode(500, $"This Path {wwwPath} does not exist");
-
-            if (model.ImagesOfProduct is null)
-                return BadRequest("You Must Enter At List One Image");
-
-
-            var images = await FileUploader.UploadProductImages(product.Id, model.ImagesOfProduct, wwwPath);
-            var mainImage = images.FirstOrDefault();
-            mainImage.IsDefault = true;
-
-            await productRepo.AddRangeAsync(images);
-
-            var createdProduct = new ProductWithCategoryAndReviewsDTO
-            {
-                Id = product.Id,
-                BrandName = product.BrandName,
-                Title = product.Title,
-                Description = product.Description,
-                Material = product.Material,
-                //Price = product.Price,
-                OperatingSystem = product.OperatingSystem,
-                HardDiskSize = product.HardDiskSize,
-                MemoryStorageCapacity = product.MemoryStorageCapacity,
-                SpecialFeatures = product.SpecialFeatures,
-                SubCategory = product.SubCategory != null ? product.SubCategory.SubCategoryName : null,
-                Category = product.SubCategory != null ? product.SubCategory.Category?.CategoryName : null,
-                ReviewsAverage = product.ReviewsAverage,
-                ReviewsCount = product.ReviewsCount,
-            };
-            createdProduct.MainImage = mainImage.ImagePath;
-
-            return Ok(createdProduct);
-        }
+        #endregion
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateProduct(int id, Product product)
@@ -219,6 +228,198 @@ namespace EasyShop.API.Controllers
                 Console.WriteLine($"An error occurred while deleting the product: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+        //[HttpPut("{productId}/UploadImages")]
+        //public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection,int productId) 
+        //{
+        //    int passcount = 0;
+        //    int errorcount = 0;
+        //    try
+        //    {
+        //        string filePath=GetFilePath(productId);
+        //        if (!System.IO.Directory.Exists(filePath)) 
+        //        {
+        //            System.IO.Directory.CreateDirectory(filePath);
+        //        }
+
+        //        foreach (var file in fileCollection)
+        //        {
+        //            string imagePath = filePath + "\\" + file.FileName;
+                  
+        //            if(System.IO.File.Exists(imagePath))
+        //            {
+        //                System.IO.File.Delete(imagePath);
+        //            }
+
+        //            using (FileStream stream=System.IO.File.Create(imagePath)) 
+        //            { 
+        //                await file.CopyToAsync(stream);
+        //                passcount++;
+        //            }
+        //        }
+        //    }
+        //    catch(Exception ex)  
+        //    {
+        //        errorcount++;
+        //        return StatusCode(500,$"An Error Occured {errorcount}");
+        //    }
+        //    return Ok($" {passcount} Images Uploaded Successfully and {errorcount} Failed");
+        //}
+
+        //[HttpGet("{productId}/images")]
+        //public async Task<IActionResult> GetProductImages(int productId)
+        //{
+        //    List<string> imagesUrls= new List<string>();
+        //    string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+        //    try
+        //    {
+        //        string filePath=GetFilePath(productId);
+
+        //        if (System.IO.Directory.Exists(filePath)) 
+        //        { 
+        //            DirectoryInfo directoryInfo = new DirectoryInfo(filePath);
+        //            FileInfo[] fileInfos = directoryInfo.GetFiles();
+        //            foreach (FileInfo fileInfo in fileInfos)
+        //            {
+        //                string filename = fileInfo.Name;
+        //                string imagePath = filePath + "\\" + filename;  
+        //                if(System.IO.File.Exists (imagePath))
+        //                {
+        //                    imagesUrls.Add(hostUrl + "/Uploads/Products/" + productId.ToString()+"/"+filename);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch( Exception ex ) 
+        //    {
+        //        return StatusCode(500,"An Error Occured");
+        //    }
+        //    return Ok(imagesUrls);
+        //}
+
+
+        [HttpPut("{productId}/UploadImages/{color}")]
+        public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
+        {
+            int passcount = 0;
+            int errorcount = 0;
+            var images = new List<ProductImage>();
+
+            try
+            {
+                foreach (var file in fileCollection)
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(memoryStream);
+                        var image = new ProductImage
+                        {
+                            ProductId = productId,
+                            Color = color,
+                            Image = memoryStream.ToArray()
+                        };
+                        images.Add(image);
+                        passcount++;
+                    }
+                }
+
+                await productRepo.AddRangeAsync(images);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "An Error Occurred");
+            }
+
+            return Ok($"{passcount} Images Uploaded Successfully and {errorcount} Failed");
+        }
+
+        //[HttpGet("{productId}/images/{color}")]
+        //public async Task<IActionResult> GetProductImages(int productId, string color)
+        //{
+        //    try
+        //    {
+        //        var productImages = productRepo.GetProductImages(productId, color);
+
+        //        if (productImages != null && productImages.Count > 0)
+        //        {
+        //            var imageBytesList = new List<byte[]>();
+        //            productImages.ForEach(item =>
+        //            {
+        //                imageBytesList.Add(item.Image);
+        //            });
+
+        //            return new JsonResult(imageBytesList)
+        //            {
+        //                ContentType = "image/jpeg"
+        //            };
+        //        }
+        //        else
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "An Error Occurred");
+        //    }
+        //}
+
+
+        [HttpGet("{productId}/images/color/{color}")]
+        public async Task<IActionResult> GetProductImages(int productId, string color)
+        {
+            try
+            {
+                var productImages = productRepo.GetProductImages(productId, color);
+
+                if (productImages != null && productImages.Count > 0)
+                {
+                    var fileContentsList = new List<FileContentResult>();
+
+                    foreach (var item in productImages)
+                    {
+                        var fileContent = new FileContentResult(item.Image, "image/jpeg");
+                        fileContentsList.Add(fileContent);
+                    }
+
+                    var archiveStream = new MemoryStream();
+                    using (var zipArchive = new ZipArchive(archiveStream, ZipArchiveMode.Create, leaveOpen: true))
+                    {
+                        for (int i = 0; i < fileContentsList.Count; i++)
+                        {
+                            var fileContent = fileContentsList[i];
+                            var entryName = $"image_{i + 1}.jpg";
+                            var entry = zipArchive.CreateEntry(entryName, CompressionLevel.NoCompression);
+
+                            using (var entryStream = entry.Open())
+                            {
+                                await entryStream.WriteAsync(fileContent.FileContents);
+                            }
+                        }
+                    }
+
+                    archiveStream.Seek(0, SeekOrigin.Begin);
+                    return File(archiveStream, "application/zip", "product_images.zip");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An Error Occurred");
+            }
+        }
+
+
+
+        [NonAction]
+        private string GetFilePath(int productId)
+        {
+            return environment.WebRootPath + "\\Uploads\\Products\\" + productId.ToString();
         }
     }
 }

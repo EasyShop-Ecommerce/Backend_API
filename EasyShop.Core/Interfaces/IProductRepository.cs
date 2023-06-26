@@ -22,6 +22,10 @@ namespace EasyShop.Core.Interfaces
 
 		Task<int> DeleteProduct(int id);
 
-        Task<IEnumerable<ProductImage>> AddRangeAsync(IEnumerable<ProductImage> images);
+        Task<ICollection<ProductImage>> AddRangeAsync(ICollection<ProductImage> images);
+
+        Task<ProductImage> AddProductImage(ProductImage productImage);
+
+		List<ProductImage> GetProductImages(int productId,string color);
     }
 }

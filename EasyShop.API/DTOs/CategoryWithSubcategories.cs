@@ -7,8 +7,6 @@
 
         public string Name { get; set; }
 
-        public string Image { get; set; }
-
         public List<string> Subcategories { get; set; } = new List<string>();
 
     }

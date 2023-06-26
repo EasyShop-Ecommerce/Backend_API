@@ -10,8 +10,6 @@
 
         public string Name { get; set; }
 
-        public string Image { get; set; }
-
         public List<int> ProductsIds { get; set; } = new List<int>();
 
     }

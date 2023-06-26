@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Uploads\SubCategory\**" />
+    <Content Remove="wwwroot\Uploads\SubCategory\**" />
+    <EmbeddedResource Remove="wwwroot\Uploads\SubCategory\**" />
+    <None Remove="wwwroot\Uploads\SubCategory\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,8 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Uploads\Category\" />
-    <Folder Include="wwwroot\Uploads\SubCategory\" />
     <Folder Include="wwwroot\Uploads\Products\" />
   </ItemGroup>
 
