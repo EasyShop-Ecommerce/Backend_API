@@ -4,6 +4,8 @@ using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Core.Specifications;
+using EasyShop.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +14,8 @@ namespace EasyShop.API.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
-	public class CustomerController : ControllerBase
+    [Authorize(Roles= "customer")]
+    public class CustomerController : ControllerBase
 	{
 		private readonly IGenericRepository<Customer> CustomerRepo;
         private readonly IMapper mapper;
@@ -29,40 +32,40 @@ namespace EasyShop.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<CustomerDTO>>> GetAllCustomers()
         {
-           // var spec = new GetCustomerWithCreditCards();
-            IReadOnlyList<Customer> customers = await CustomerRepo.GetAllAsync();
-            if (customers.Count == 0)
+            IReadOnlyList<Customer> Customers = await CustomerRepo.GetAllAsync();
+            if (Customers.Count == 0)
             {
                 return StatusCode(200, "No Customers Found");
             }
- 
-            var customerDTOs = new List<CustomerDTO>();
-            foreach (var customer in customers)
+
+            var CustomerDTOs = new List<CustomerDTO>();
+            foreach (var customer in Customers)
             {
-                var customerDTO = new CustomerDTO
+                var CustomerDTO = new CustomerDTO
                 {
                     Id = customer.Id,
-                    Name = customer.Name,
+                    Name=customer.Name,
                     Email = customer.Email,
                     Phone = customer.Phone,
                     Street = customer.Street,
                     City = customer.City,
                     Government = customer.Government,
-                 
+                    
+
                 };
                 foreach (var credit in customer.CreditCards)
                 {
-                    customerDTO.creditCards.Add(credit.Cardholder_name);
+                    CustomerDTO.creditCards.Add(credit.Cardholder_name);
                 }
                 foreach (var order in customer.Orders)
                 {
-                    customerDTO.orders.Add(order.TotalPrice);
+                    CustomerDTO.orders.Add(order.TotalPrice);
                 }
-
-                customerDTOs.Add(customerDTO);
+                
+                CustomerDTOs.Add(CustomerDTO);
             }
 
-            return Ok(customerDTOs);
+            return Ok(CustomerDTOs);
         }
 
         [HttpGet("{id:int}", Name = "GetOneCustomerRoute")]
@@ -75,6 +78,7 @@ namespace EasyShop.API.Controllers
                 return NotFound("This Customer Not Found");
             }
             var _customerDTO=new CustomerDTO();
+            _customerDTO.Id = id;
             _customerDTO.Name= customer.Name;
             _customerDTO.Phone= customer.Phone;
             _customerDTO.Email= customer.Email;
@@ -94,8 +98,8 @@ namespace EasyShop.API.Controllers
             return Ok(_customerDTO);
         }
 
-     
 
+        
         [HttpPost]
 		public async Task<ActionResult> AddCustomer(Customer customer)
 		{
@@ -146,6 +150,7 @@ namespace EasyShop.API.Controllers
 
                     if (user != null)
                     {
+                       
                         // Delete the user using the UserManager
                         var result =await _userManager.DeleteAsync(user);
 

@@ -3,6 +3,7 @@ using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace EasyShop.API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _config;
         private readonly DBContext _context;
-        
+
 
         public CustomerAccountController(UserManager<AppUser> userManager ,IConfiguration config,DBContext context)
         {
@@ -59,6 +60,7 @@ namespace EasyShop.API.Controllers
                 var result= await _userManager.CreateAsync(user,registerDTO.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "customer");
 
                     return Ok(customer);
                 }
@@ -88,15 +90,9 @@ namespace EasyShop.API.Controllers
                         // Claims Token
                         var claims = new List<Claim>();
                         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
-                      //  claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id));
+                        claims.Add(new Claim("Id",user.Id.ToString()));
                         claims.Add(new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()));
-
-                        // Get Role
-                        var roles=await _userManager.GetRolesAsync(user);
-                        foreach (var role in roles)
-                        {
-                            claims.Add(new Claim(ClaimTypes.Role, role));
-                        }
+                        claims.Add(new Claim(ClaimTypes.Role, "customer"));
 
                         SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"])); 
 
@@ -110,11 +106,15 @@ namespace EasyShop.API.Controllers
                             expires:DateTime.Now.AddHours(2),
                             signingCredentials:credentials
                             );
-                        return Ok(new
+                        RefreshToken refreshToken = new RefreshToken
                         {
-                            token = new JwtSecurityTokenHandler().WriteToken(Token),
-                            expiration = Token.ValidTo
-                        }) ;
+                            Token = new JwtSecurityTokenHandler().WriteToken(Token),
+                            Expiration = Token.ValidTo,
+                            UserId= user.Id
+                        };
+                        
+
+                        return Ok(refreshToken) ;
                     }
                     return Unauthorized("UnAuthorized Customer");    
                 }
@@ -124,5 +124,22 @@ namespace EasyShop.API.Controllers
             else
                 return Unauthorized("UnAuthorized Customer");
         }
+
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            string rawUserId = HttpContext.User.FindFirstValue("Id");
+
+            if (!int.TryParse(rawUserId, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            
+
+            return NoContent();
+        }
+
     }
 }

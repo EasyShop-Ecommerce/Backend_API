@@ -58,7 +58,7 @@ namespace EasyShop.API
 			builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 			
             builder.Services.AddScoped(typeof (IGenericRepository<>), typeof(GenericRepository<>));
-			builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
@@ -83,8 +83,10 @@ namespace EasyShop.API
             app.UseStaticFiles();
 			app.UseHttpsRedirection();
 
+
+            app.UseAuthentication();
             app.UseAuthorization();
-            app.UseAuthorization();
+           
 
 
 			app.MapControllers();

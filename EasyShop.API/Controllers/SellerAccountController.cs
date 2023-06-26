@@ -2,6 +2,7 @@
 using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
 using EasyShop.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +64,7 @@ namespace EasyShop.API.Controllers
                 var result = await _userManager.CreateAsync(user, registerDTO.Password);
                 if (result.Succeeded)
                 {
-
+                    await _userManager.AddToRoleAsync(user, "seller");
                     return Ok(seller);
                 }
                 else
@@ -97,15 +98,9 @@ namespace EasyShop.API.Controllers
                         // Claims Token
                         var claims = new List<Claim>();
                         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
-                        //  claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id));
+                        claims.Add(new Claim("Id", user.Id.ToString()));
                         claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-                        // Get Role
-                        var roles = await _userManager.GetRolesAsync(user);
-                        foreach (var role in roles)
-                        {
-                            claims.Add(new Claim(ClaimTypes.Role, role));
-                        }
+                        claims.Add(new Claim(ClaimTypes.Role, "seller"));
 
                         SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
 

@@ -50,6 +50,8 @@ namespace EasyShop.Infrastructure.Data
 
 		public DbSet<StoreProduct> StoreProducts { get; set; }
 
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 
