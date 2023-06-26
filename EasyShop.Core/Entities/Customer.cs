@@ -16,7 +16,11 @@ namespace EasyShop.Core.Entities
 		[RegularExpression("^\\S+@\\S+\\.\\S+$", ErrorMessage = "Invalid Email")]
 		[Required]
 		public string Email { get; set; }
+
 		[Required]
+        public string Password { get; set; }
+
+        [Required]
 		public string Street { get; set; }
 		[Required]
 		public string City { get; set; }

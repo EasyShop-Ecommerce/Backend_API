@@ -12,6 +12,11 @@ namespace EasyShop.Core.Entities
 
 		public decimal PricePerKm { get; set; }
 
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
         //public ICollection<Order> Orders { get; set; }= new List<Order>();
 
         public virtual ICollection<Product> Products { get; set; }= new List<Product>();
