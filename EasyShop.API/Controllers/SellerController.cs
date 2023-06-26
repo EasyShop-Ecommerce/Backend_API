@@ -4,17 +4,19 @@ using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyShop.API.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
+	[Route("[controller]")]
+	[ApiController]
+    [Authorize(Roles = "seller")]
     public class SellerController : ControllerBase
-    {
-        private readonly IGenericRepository<Seller> SellerRepo;
+	{
+		private readonly IGenericRepository<Seller> SellerRepo;
         private readonly IMapper mapper;
         private readonly UserManager<AppUser> _userManager;
 
@@ -29,6 +31,7 @@ namespace EasyShop.API.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<SellerDTO>>> GetAllSellers()
         {
             // var spec = new GetSellerWithCreditCards();
