@@ -368,3 +368,5 @@ FodyWeavers.xsd
 /EasyShop.Core/Entities/ServersProduct.cs
 /EasyShop.Core/Entities/ShoesProduct.cs
 /EasyShop.Core/Entities/SmartphonesProduct.cs
+/EasyShop.API/Controllers/StoreProductController.cs
+/EasyShop.API/Controllers/StoreController.cs
