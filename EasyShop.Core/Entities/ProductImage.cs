@@ -12,6 +12,10 @@ namespace EasyShop.Core.Entities
 
         public byte[] Image { get; set; }
 		
+		public bool? IsDefault { get; set; }
+
+		public string ImagePath { get; set; }
+
 		[ForeignKey("Product")]
 		public int ProductId { get; set; }
 		public virtual Product Product { get; set; }

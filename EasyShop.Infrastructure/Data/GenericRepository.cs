@@ -36,7 +36,7 @@ namespace EasyShop.Infrastructure.Data
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while adding the entity.", ex);
+                throw ;
             }
         }
 
