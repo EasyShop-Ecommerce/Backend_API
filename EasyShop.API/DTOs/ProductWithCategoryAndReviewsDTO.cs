@@ -30,7 +30,11 @@ namespace EasyShop.API.DTOs
 
         public string SubCategory { get; set; }
 
-        public string Category{ get; set; }
+        public int SubCategoryId { get; set; }
+
+        public string Category { get; set; }
+
+        public int? CategoryId{ get; set; }
 
         public int ReviewsCount { get; set; }
 
