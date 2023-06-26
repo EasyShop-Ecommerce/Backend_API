@@ -74,8 +74,8 @@ namespace EasyShop.Infrastructure.Data
         {
 
           T c = await Context.Set<T>().FindAsync(Id);
-          Context.Entry(c).State = EntityState.Modified;
-          int row = Context.SaveChanges();
+          Context.Entry(c).CurrentValues.SetValues(t); 
+          int row = await Context.SaveChangesAsync();
           return ($"NO.Rows is affected = {row}");
 
         }
@@ -83,8 +83,8 @@ namespace EasyShop.Infrastructure.Data
         public async Task<string> EditAsync(int Id1, int Id2, T t)
         {
             T c = await Context.Set<T>().FindAsync(Id1, Id2);
-            Context.Entry(c).State = EntityState.Modified;
-            int row = Context.SaveChanges();
+            Context.Entry(c).CurrentValues.SetValues(t);
+            int row = await Context.SaveChangesAsync();
             return ($"NO.Rows is affected = {row}");
         }
 

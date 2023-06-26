@@ -34,7 +34,7 @@ namespace EasyShop.API.Controllers
             }));
         }
 
-        [HttpGet("/products/product/{productId}/seller/{sellerId}")]
+        [HttpGet("product/{productId}/seller/{sellerId}")]
         public async Task<ActionResult<ProductSellersDTO>> Get(int productId, int sellerId)
         {
             var productSeller = await productSellerRepo.GetByIdAsync(productId, sellerId);
@@ -112,7 +112,7 @@ namespace EasyShop.API.Controllers
 
             await productSellerRepo.EditAsync(productId,sellerId, productSeller);
 
-            return StatusCode(204, "Product Seller Updated Successfully");
+            return StatusCode(200, "Product Seller Updated Successfully");
         }
 
         [HttpDelete("product/{productId}/seller/{sellerId}")]
