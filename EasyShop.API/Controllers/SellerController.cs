@@ -46,7 +46,7 @@ namespace EasyShop.API.Controllers
             {
                 var SellerDTO = new SellerDTO
                 {
-
+                    Id=Seller.Id,
                     FirstName = Seller.FirstName,
                     MiddleName = Seller.MiddleName,
                     LastName = Seller.LastName,
@@ -92,6 +92,7 @@ namespace EasyShop.API.Controllers
             }
             var SellerDTO = new SellerDTO()
             {
+                Id = Seller.Id,
                 FirstName = Seller.FirstName,
                 MiddleName = Seller.MiddleName,
                 LastName = Seller.LastName,

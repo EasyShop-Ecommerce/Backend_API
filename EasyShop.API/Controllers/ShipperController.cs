@@ -36,6 +36,7 @@ namespace EasyShop.API.Controllers
             {
                 var shipperDTO = new ShipperDTO
                 {
+                    Id = shipper.Id,
                     Name = shipper.Name,
                     PricePerKm = shipper.PricePerKm
 

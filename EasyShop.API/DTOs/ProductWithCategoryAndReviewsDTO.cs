@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EasyShop.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace EasyShop.API.DTOs
 {
@@ -43,5 +44,7 @@ namespace EasyShop.API.DTOs
         public List<ProductSellersDTO> Sellers { get; set; }=new List<ProductSellersDTO>();
 
         public int? ShipperId { get; set; }
+
+        public byte[] DefaultImage { get;set; }
     }
 }

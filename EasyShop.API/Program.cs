@@ -27,7 +27,8 @@ namespace EasyShop.API
 			builder.Services.AddSwaggerGen();
 			builder.Services.AddDbContext<DBContext>(options =>
 			{
-				options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+				options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+					o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 			});
 
 			// Create User

@@ -4,6 +4,8 @@ namespace EasyShop.API.DTOs
 {
     public class ShipperDTO
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public decimal PricePerKm { get; set; }

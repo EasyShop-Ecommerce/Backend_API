@@ -25,7 +25,8 @@ namespace EasyShop.Infrastructure.Data
 								.ThenInclude(p => p.Category)
 								.Include(p=>p.Reviews)
                                 .Include(p => p.ProductSellers)
-								.Include(p=>p.Shipper)
+                                .Include(p => p.ProductImages)
+                                .Include(p=>p.Shipper)
                                 .ToListAsync();
 		}
 
@@ -36,6 +37,7 @@ namespace EasyShop.Infrastructure.Data
 								.ThenInclude(p => p.Category)
 								.Include(p => p.Reviews)
 								.Include(p=>p.ProductSellers)
+								.Include(p=>p.ProductImages)
                                 .Include(p => p.Shipper)
                                 .SingleOrDefaultAsync(p => p.Id == id);
 		}
@@ -143,7 +145,7 @@ namespace EasyShop.Infrastructure.Data
             var product = Context.Products
 										.Include(p => p.ProductImages)
 										.FirstOrDefault(p => p.Id == productId);
-
+			
             if (product != null)
             {
                 var images = product.ProductImages
@@ -152,7 +154,7 @@ namespace EasyShop.Infrastructure.Data
 
                 return images;
             }
-
+            if (color == "all") return product.ProductImages.ToList();
             return null; 
         }
     }

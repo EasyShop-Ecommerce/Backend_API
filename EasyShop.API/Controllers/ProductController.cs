@@ -44,20 +44,21 @@ namespace EasyShop.API.Controllers
                 MemoryStorageCapacity = p.MemoryStorageCapacity ?? null,
                 SpecialFeatures = p.SpecialFeatures ?? null,
                 SubCategory = p.SubCategory != null ? p.SubCategory.SubCategoryName : null,
-                SubCategoryId=p.SubCategoryId,
+                SubCategoryId = p.SubCategoryId,
                 Category = p.SubCategory != null ? p.SubCategory.Category?.CategoryName : null,
                 CategoryId = p.SubCategory != null ? p.SubCategory.Category?.Id : null,
-                ShipperId =p.ShipperId,
+                ShipperId = p.ShipperId,
                 Sellers = p.ProductSellers != null ? p.ProductSellers.Select(ps => new ProductSellersDTO
                 {
-                    ProductId=ps.ProductId,
+                    ProductId = ps.ProductId,
                     SellerId = ps.SellerId,
-                    ProductQuantity=ps.Quantity,
+                    ProductQuantity = ps.Quantity,
                     Price = ps.Price,
                 }).ToList() : null,
                 ReviewsAverage = p.ReviewsAverage,
                 ReviewsCount = p.ReviewsCount,
-            }));
+                DefaultImage = p.ProductImages?.FirstOrDefault()?.Image ?? null
+        })) ;
         }
 
 
@@ -95,7 +96,8 @@ namespace EasyShop.API.Controllers
                 }).ToList() : null,
                 ReviewsAverage = productToReturn.ReviewsAverage,
                 ReviewsCount = productToReturn.ReviewsCount,
-            };
+                DefaultImage = productToReturn.ProductImages?.FirstOrDefault()?.Image ?? null
+        };
             return Ok(product);
         }
 
@@ -231,14 +233,14 @@ namespace EasyShop.API.Controllers
         }
 
         //[HttpPut("{productId}/UploadImages")]
-        //public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection,int productId) 
+        //public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId)
         //{
         //    int passcount = 0;
         //    int errorcount = 0;
         //    try
         //    {
-        //        string filePath=GetFilePath(productId);
-        //        if (!System.IO.Directory.Exists(filePath)) 
+        //        string filePath = GetFilePath(productId);
+        //        if (!System.IO.Directory.Exists(filePath))
         //        {
         //            System.IO.Directory.CreateDirectory(filePath);
         //        }
@@ -246,23 +248,23 @@ namespace EasyShop.API.Controllers
         //        foreach (var file in fileCollection)
         //        {
         //            string imagePath = filePath + "\\" + file.FileName;
-                  
-        //            if(System.IO.File.Exists(imagePath))
+
+        //            if (System.IO.File.Exists(imagePath))
         //            {
         //                System.IO.File.Delete(imagePath);
         //            }
 
-        //            using (FileStream stream=System.IO.File.Create(imagePath)) 
-        //            { 
+        //            using (FileStream stream = System.IO.File.Create(imagePath))
+        //            {
         //                await file.CopyToAsync(stream);
         //                passcount++;
         //            }
         //        }
         //    }
-        //    catch(Exception ex)  
+        //    catch (Exception ex)
         //    {
         //        errorcount++;
-        //        return StatusCode(500,$"An Error Occured {errorcount}");
+        //        return StatusCode(500, $"An Error Occured {errorcount}");
         //    }
         //    return Ok($" {passcount} Images Uploaded Successfully and {errorcount} Failed");
         //}
@@ -335,7 +337,35 @@ namespace EasyShop.API.Controllers
             return Ok($"{passcount} Images Uploaded Successfully and {errorcount} Failed");
         }
 
-        //[HttpGet("{productId}/images/{color}")]
+        [HttpGet("{productId}/images/{color}")]
+        public async Task<IActionResult> GetProductImages(int productId, string color)
+        {
+            List<string> imagesUrls = new List<string>();
+            try
+            {
+                var productImages = productRepo.GetProductImages(productId, color);
+
+                if (productImages != null && productImages.Count > 0)
+                {
+                    productImages.ForEach(item =>
+                    {
+                        imagesUrls.Add(Convert.ToBase64String(item.Image));
+                    });
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An Error Occurred");
+            }
+            return Ok(imagesUrls);
+        }
+
+
+        //[HttpGet("{productId}/images/color/{color}")]
         //public async Task<IActionResult> GetProductImages(int productId, string color)
         //{
         //    try
@@ -344,16 +374,32 @@ namespace EasyShop.API.Controllers
 
         //        if (productImages != null && productImages.Count > 0)
         //        {
-        //            var imageBytesList = new List<byte[]>();
-        //            productImages.ForEach(item =>
-        //            {
-        //                imageBytesList.Add(item.Image);
-        //            });
+        //            var fileContentsList = new List<FileContentResult>();
 
-        //            return new JsonResult(imageBytesList)
+        //            foreach (var item in productImages)
         //            {
-        //                ContentType = "image/jpeg"
-        //            };
+        //                var fileContent = new FileContentResult(item.Image, "image/jpeg");
+        //                fileContentsList.Add(fileContent);
+        //            }
+
+        //            var archiveStream = new MemoryStream();
+        //            using (var zipArchive = new ZipArchive(archiveStream, ZipArchiveMode.Create, leaveOpen: true))
+        //            {
+        //                for (int i = 0; i < fileContentsList.Count; i++)
+        //                {
+        //                    var fileContent = fileContentsList[i];
+        //                    var entryName = $"image_{i + 1}.jpg";
+        //                    var entry = zipArchive.CreateEntry(entryName, CompressionLevel.NoCompression);
+
+        //                    using (var entryStream = entry.Open())
+        //                    {
+        //                        await entryStream.WriteAsync(fileContent.FileContents);
+        //                    }
+        //                }
+        //            }
+
+        //            archiveStream.Seek(0, SeekOrigin.Begin);
+        //            return File(archiveStream, "application/zip", "product_images.zip");
         //        }
         //        else
         //        {
@@ -365,54 +411,6 @@ namespace EasyShop.API.Controllers
         //        return StatusCode(500, "An Error Occurred");
         //    }
         //}
-
-
-        [HttpGet("{productId}/images/color/{color}")]
-        public async Task<IActionResult> GetProductImages(int productId, string color)
-        {
-            try
-            {
-                var productImages = productRepo.GetProductImages(productId, color);
-
-                if (productImages != null && productImages.Count > 0)
-                {
-                    var fileContentsList = new List<FileContentResult>();
-
-                    foreach (var item in productImages)
-                    {
-                        var fileContent = new FileContentResult(item.Image, "image/jpeg");
-                        fileContentsList.Add(fileContent);
-                    }
-
-                    var archiveStream = new MemoryStream();
-                    using (var zipArchive = new ZipArchive(archiveStream, ZipArchiveMode.Create, leaveOpen: true))
-                    {
-                        for (int i = 0; i < fileContentsList.Count; i++)
-                        {
-                            var fileContent = fileContentsList[i];
-                            var entryName = $"image_{i + 1}.jpg";
-                            var entry = zipArchive.CreateEntry(entryName, CompressionLevel.NoCompression);
-
-                            using (var entryStream = entry.Open())
-                            {
-                                await entryStream.WriteAsync(fileContent.FileContents);
-                            }
-                        }
-                    }
-
-                    archiveStream.Seek(0, SeekOrigin.Begin);
-                    return File(archiveStream, "application/zip", "product_images.zip");
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An Error Occurred");
-            }
-        }
 
 
 
