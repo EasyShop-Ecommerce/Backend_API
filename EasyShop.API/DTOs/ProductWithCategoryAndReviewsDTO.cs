@@ -45,6 +45,6 @@ namespace EasyShop.API.DTOs
 
         public int? ShipperId { get; set; }
 
-        public byte[] DefaultImage { get;set; }
+        public string DefaultImage { get;set; }
     }
 }

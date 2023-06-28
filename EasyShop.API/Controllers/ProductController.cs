@@ -57,10 +57,11 @@ namespace EasyShop.API.Controllers
                 }).ToList() : null,
                 ReviewsAverage = p.ReviewsAverage,
                 ReviewsCount = p.ReviewsCount,
-                DefaultImage = p.ProductImages?.FirstOrDefault()?.Image ?? null
+                DefaultImage = p.ProductImages?.FirstOrDefault()?.Image != null
+                                               ? Convert.ToBase64String(p.ProductImages.FirstOrDefault().Image)
+                                                : null
             })) ;
         }
-
 
         [HttpGet("{id:int}", Name = "GetOneProductRoute")]
         public async Task<ActionResult<ProductWithCategoryAndReviewsDTO>> GetProduct(int id)
@@ -96,8 +97,10 @@ namespace EasyShop.API.Controllers
                 }).ToList() : null,
                 ReviewsAverage = productToReturn.ReviewsAverage,
                 ReviewsCount = productToReturn.ReviewsCount,
-                DefaultImage = productToReturn.ProductImages?.FirstOrDefault()?.Image ?? null
-        };
+                DefaultImage = productToReturn.ProductImages?.FirstOrDefault()?.Image != null
+                                               ? Convert.ToBase64String(productToReturn.ProductImages.FirstOrDefault().Image)
+                                                : null
+            };
             return Ok(product);
         }
 
@@ -118,6 +121,123 @@ namespace EasyShop.API.Controllers
                 return Created(url, product);
             }
             return BadRequest(ModelState);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProduct(int id, Product product)
+        {
+            if (product == null) return BadRequest();
+            if (id != product.Id) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    int rowsAffected = await productRepo.UpdateProduct(id, product);
+
+                    if (rowsAffected > 0)
+                    {
+                        return Ok("Product Updated Successfully");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    return StatusCode(500, "An error occurred while updating the product.");
+                }
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                int rowsDeleted = await productRepo.DeleteProduct(id);
+                return Ok($"{rowsDeleted} row(s) deleted successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while deleting the product: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPut("{productId}/UploadImages/{color}")]
+        public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
+        {
+            int passcount = 0;
+            int errorcount = 0;
+            var images = new List<ProductImage>();
+
+            try
+            {
+                foreach (var file in fileCollection)
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(memoryStream);
+                        var image = new ProductImage
+                        {
+                            ProductId = productId,
+                            Color = color,
+                            Image = memoryStream.ToArray()
+                        };
+                        images.Add(image);
+                        passcount++;
+                    }
+                }
+
+                await productRepo.AddRangeAsync(images);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "An Error Occurred");
+            }
+
+            return Ok(images);
+        }
+
+        [HttpGet("{productId}/images/{color}")]
+        public async Task<IActionResult> GetProductImages(int productId, string color)
+        {
+            List<string> imagesUrls = new List<string>();
+            try
+            {
+                var productImages = productRepo.GetProductImages(productId, color);
+
+                if (productImages != null && productImages.Count > 0)
+                {
+                    productImages.ForEach(item =>
+                    {
+                        imagesUrls.Add(Convert.ToBase64String(item.Image));
+                    });
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An Error Occurred");
+            }
+            return Ok(imagesUrls);
+        }
+
+        [NonAction]
+        private string GetFilePath(int productId)
+        {
+            return environment.WebRootPath + "\\Uploads\\Products\\" + productId.ToString();
         }
 
         #region Trying Adding Product Image With Product Data
@@ -183,55 +303,7 @@ namespace EasyShop.API.Controllers
         //    return Ok(createdProduct);
         //}
         #endregion
-
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProduct(int id, Product product)
-        {
-            if (product == null) return BadRequest();
-            if (id != product.Id) return BadRequest();
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    int rowsAffected = await productRepo.UpdateProduct(id, product);
-
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("Product Updated Successfully");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
-                catch (DbUpdateException ex)
-                {
-                    return StatusCode(500, "An error occurred while updating the product.");
-                }
-            }
-
-            return BadRequest(ModelState);
-        }
-
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                int rowsDeleted = await productRepo.DeleteProduct(id);
-                return Ok($"{rowsDeleted} row(s) deleted successfully.");
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred while deleting the product: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
+        #region Tring Images Adding
         //[HttpPut("{productId}/UploadImages")]
         //public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId)
         //{
@@ -299,72 +371,6 @@ namespace EasyShop.API.Controllers
         //    }
         //    return Ok(imagesUrls);
         //}
-
-
-        [HttpPut("{productId}/UploadImages/{color}")]
-        public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
-        {
-            int passcount = 0;
-            int errorcount = 0;
-            var images = new List<ProductImage>();
-
-            try
-            {
-                foreach (var file in fileCollection)
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        await file.CopyToAsync(memoryStream);
-                        var image = new ProductImage
-                        {
-                            ProductId = productId,
-                            Color = color,
-                            Image = memoryStream.ToArray()
-                        };
-                        images.Add(image);
-                        passcount++;
-                    }
-                }
-
-                await productRepo.AddRangeAsync(images);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, "An Error Occurred");
-            }
-
-            return Ok($"{passcount} Images Uploaded Successfully and {errorcount} Failed");
-        }
-
-        [HttpGet("{productId}/images/{color}")]
-        public async Task<IActionResult> GetProductImages(int productId, string color)
-        {
-            List<string> imagesUrls = new List<string>();
-            try
-            {
-                var productImages = productRepo.GetProductImages(productId, color);
-
-                if (productImages != null && productImages.Count > 0)
-                {
-                    productImages.ForEach(item =>
-                    {
-                        imagesUrls.Add(Convert.ToBase64String(item.Image));
-                    });
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An Error Occurred");
-            }
-            return Ok(imagesUrls);
-        }
-
-
         //[HttpGet("{productId}/images/color/{color}")]
         //public async Task<IActionResult> GetProductImages(int productId, string color)
         //{
@@ -411,13 +417,6 @@ namespace EasyShop.API.Controllers
         //        return StatusCode(500, "An Error Occurred");
         //    }
         //}
-
-
-
-        [NonAction]
-        private string GetFilePath(int productId)
-        {
-            return environment.WebRootPath + "\\Uploads\\Products\\" + productId.ToString();
-        }
+        #endregion
     }
 }
