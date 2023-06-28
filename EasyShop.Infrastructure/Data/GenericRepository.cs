@@ -139,12 +139,7 @@ namespace EasyShop.Infrastructure.Data
         }
 
         public async Task<T> UpdateAsync(T entity, params int[] ids)
-        {
-            //if (ids.Length != 2)
-            //{
-            //    return "Invalid number of IDs provided.";
-            //}
-
+        {       
             T existingEntity = await Context.Set<T>().FindAsync(ids[0], ids[1]);
             if (existingEntity != null)
             {
