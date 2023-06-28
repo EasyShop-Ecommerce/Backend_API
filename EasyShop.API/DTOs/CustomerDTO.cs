@@ -11,6 +11,8 @@ namespace EasyShop.API.DTOs
         public string Phone { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
+        public string Password { get; set; }
+
         public string Government { get; set; }
         public List<decimal> orders { get; set; } =new List<decimal>();
         public List<string> creditCards { get; set; }=new List<string>();

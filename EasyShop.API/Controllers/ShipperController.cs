@@ -38,7 +38,9 @@ namespace EasyShop.API.Controllers
                 {
                     Id = shipper.Id,
                     Name = shipper.Name,
-                    PricePerKm = shipper.PricePerKm
+                    PricePerKm = shipper.PricePerKm,
+                    Email=shipper.Email,
+                    Password=shipper.Password
 
                 };
 
@@ -80,9 +82,10 @@ namespace EasyShop.API.Controllers
             }
             var ShipperDTO = new ShipperDTO()
             {
-
                 Name = Shipper.Name,
-                PricePerKm = Shipper.PricePerKm
+                PricePerKm = Shipper.PricePerKm,
+                Email = Shipper.Email,
+                Password = Shipper.Password
 
             };
 

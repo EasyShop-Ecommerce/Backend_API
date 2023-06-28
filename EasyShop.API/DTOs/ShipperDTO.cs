@@ -8,6 +8,10 @@ namespace EasyShop.API.DTOs
 
         public string Name { get; set; }
 
+        public string Email { get; set; }
+
+        public string Password { get; set; }
+
         public decimal PricePerKm { get; set; }
 
         public List<int> ShipperProducts { get; set; }=new List<int>();

@@ -46,11 +46,12 @@ namespace EasyShop.API.Controllers
                     Id = customer.Id,
                     Name=customer.Name,
                     Email = customer.Email,
+                    Password = customer.Password,
                     Phone = customer.Phone,
                     Street = customer.Street,
                     City = customer.City,
                     Government = customer.Government,
-                    
+                   
 
                 };
                 foreach (var credit in customer.CreditCards)
@@ -82,10 +83,11 @@ namespace EasyShop.API.Controllers
             _customerDTO.Name= customer.Name;
             _customerDTO.Phone= customer.Phone;
             _customerDTO.Email= customer.Email;
+            _customerDTO.Password = customer.Password;
             _customerDTO.Street= customer.Street;
             _customerDTO.City= customer.City;
             _customerDTO.Government= customer.Government;
-
+        
 
             foreach (var credit in customer.CreditCards)
             {
