@@ -14,6 +14,8 @@ namespace EasyShop.API.DTOs
 
         public decimal PricePerKm { get; set; }
 
+        public int DaysForShipment { get; set; }
+
         public List<int> ShipperProducts { get; set; }=new List<int>();
 
         //public List<DateTime> orders { get; set; }=new List<DateTime>();
