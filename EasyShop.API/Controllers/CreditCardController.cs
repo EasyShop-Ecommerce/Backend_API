@@ -98,9 +98,9 @@ namespace EasyShop.API.Controllers
                     CreditCard c = await CreditCardRepo.GetByIdAsync(id);
                     if (c != null)
                     {
-                        string result = await CreditCardRepo.EditAsync(id, CreditCard);
-                        await Console.Out.WriteLineAsync($"EditResult=>{result}");
-                        return StatusCode(200, $"This CreditCard : {c.Cardholder_name} is Edited");
+                        await CreditCardRepo.EditAsync(id, CreditCard);
+                        //await Console.Out.WriteLineAsync($"EditResult=>{result}");
+                        return StatusCode(200, CreditCard);
                     }
                     else
                         return StatusCode(404, "This CreditCard Not Found");

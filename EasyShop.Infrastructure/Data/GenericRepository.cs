@@ -70,22 +70,22 @@ namespace EasyShop.Infrastructure.Data
             return c;
         }
 
-        public async Task<string> EditAsync(int Id, T t)
+        public async Task<T> EditAsync(int Id, T t)
         {
 
           T c = await Context.Set<T>().FindAsync(Id);
           Context.Entry(c).CurrentValues.SetValues(t); 
-          int row = await Context.SaveChangesAsync();
-          return ($"NO.Rows is affected = {row}");
+          await Context.SaveChangesAsync();
+          return t;
 
         }
 
-        public async Task<string> EditAsync(int Id1, int Id2, T t)
+        public async Task<T> EditAsync(int Id1, int Id2, T t)
         {
             T c = await Context.Set<T>().FindAsync(Id1, Id2);
             Context.Entry(c).CurrentValues.SetValues(t);
-            int row = await Context.SaveChangesAsync();
-            return ($"NO.Rows is affected = {row}");
+            await Context.SaveChangesAsync();
+            return t;
         }
 
         public async Task<IReadOnlyList<T>> GetAllAsync()

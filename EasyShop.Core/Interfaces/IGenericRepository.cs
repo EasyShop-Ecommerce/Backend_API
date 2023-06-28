@@ -23,8 +23,8 @@ namespace EasyShop.Core.Interfaces
 
         Task<T> AddAsync(T t);
 
-		Task<string> EditAsync(int Id1,int Id2,T t);
-        Task<string> EditAsync(int Id, T t);
+		Task<T> EditAsync(int Id1,int Id2,T t);
+        Task<T> EditAsync(int Id, T t);
 
         Task<T> DeleteAsync(int Id);
         Task<T> DeleteAsync(int Id1, int Id2);

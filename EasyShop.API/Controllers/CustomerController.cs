@@ -126,9 +126,9 @@ namespace EasyShop.API.Controllers
 					Customer c = await CustomerRepo.GetByIdAsync(id);
 					if (c != null)
 					{
-						string result = await CustomerRepo.EditAsync(id, customer);
-						await Console.Out.WriteLineAsync($"EditResult=>{result}");
-						return StatusCode(200, $"This Customer : {c.Name} is Edited");
+						Customer editedCusomer= await CustomerRepo.EditAsync(id, customer);
+						await Console.Out.WriteLineAsync($"EditResult=>{editedCusomer}");
+						return StatusCode(200, editedCusomer);
 					}
 					else
 						return StatusCode(404, "This Customer Not Found");

@@ -152,9 +152,9 @@ namespace EasyShop.API.Controllers
                     Seller c = await SellerRepo.GetByIdAsync(id);
                     if (c != null)
                     {
-                        string result = await SellerRepo.EditAsync(id, Seller);
-                        await Console.Out.WriteLineAsync($"EditResult=>{result}");
-                        return StatusCode(200, $"This Seller : {c.FirstName} is Edited");
+                        Seller editedSeller = await SellerRepo.EditAsync(id, Seller);
+                        await Console.Out.WriteLineAsync($"EditResult=>{editedSeller}");
+                        return StatusCode(200, editedSeller);
                     }
                     else
                         return StatusCode(404, "This Seller Not Found");

@@ -121,9 +121,9 @@ namespace EasyShop.API.Controllers
                     PaymentMethod c = await PaymentMethodRepo.GetByIdAsync(id);
                     if (c != null)
                     {
-                        string result = await PaymentMethodRepo.EditAsync(id, PaymentMethod);
-                        await Console.Out.WriteLineAsync($"EditResult=>{result}");
-                        return StatusCode(200, $"This PaymentMethod : {c.Method} is Edited");
+                        await PaymentMethodRepo.EditAsync(id, PaymentMethod);
+                       // await Console.Out.WriteLineAsync($"EditResult=>{result}");
+                        return StatusCode(200, PaymentMethod);
                     }
                     else
                         return StatusCode(404, "This PaymentMethod Not Found");

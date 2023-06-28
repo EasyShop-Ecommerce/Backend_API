@@ -122,9 +122,9 @@ namespace EasyShop.API.Controllers
                     Order c = await OrderRepo.GetByIdAsync(id);
                     if (c != null)
                     {
-                        string result = await OrderRepo.EditAsync(id, Order);
-                        await Console.Out.WriteLineAsync($"EditResult=>{result}");
-                        return StatusCode(200, $"This Order : {c.Id} is Edited");
+                        await OrderRepo.EditAsync(id, Order);
+                        //await Console.Out.WriteLineAsync($"EditResult=>{result}");
+                        return StatusCode(200, Order);
                     }
                     else
                         return StatusCode(404, "This Order Not Found");

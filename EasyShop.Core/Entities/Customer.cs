@@ -10,7 +10,7 @@ namespace EasyShop.Core.Entities
 		public int Id { get; set; }
 
 		[Required]
-		[RegularExpression("^[a-zA-Z]*$",ErrorMessage ="Invalid Name")]
+		//[RegularExpression("^[a-zA-Z]*$",ErrorMessage ="Invalid Name")]
 		public string Name { get; set; }
 
 		[RegularExpression("^\\S+@\\S+\\.\\S+$", ErrorMessage = "Invalid Email")]

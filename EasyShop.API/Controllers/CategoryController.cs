@@ -88,14 +88,8 @@ namespace EasyShop.API.Controllers
             {
                 try
                 {
-                    string result = await categoryRepo.EditAsync(id, category);
-
-                    //if (result == "Entity not found.")
-                    //{
-                    //    return NotFound("The specified category does not exist.");
-                    //}
-
-                    return Ok("Category Updated Successfully");
+                     await categoryRepo.EditAsync(id, category);
+                    return Ok(category);
                 }
                 catch (DbUpdateException ex)
                 {

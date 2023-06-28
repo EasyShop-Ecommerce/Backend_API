@@ -100,9 +100,9 @@ namespace EasyShop.API.Controllers
                     Status c = await StatusRepo.GetByIdAsync(id);
                     if (c != null)
                     {
-                        string result = await StatusRepo.EditAsync(id, Status);
-                        await Console.Out.WriteLineAsync($"EditResult=>{result}");
-                        return StatusCode(200, $"This Status : {c.StatusName} is Edited");
+                        await StatusRepo.EditAsync(id, Status);
+                       // await Console.Out.WriteLineAsync($"EditResult=>{result}");
+                        return StatusCode(200, Status);
                     }
                     else
                         return StatusCode(404, "This Status Not Found");

@@ -85,14 +85,8 @@ namespace EasyShop.API.Controllers
             {
                 try
                 {
-                    string result = await subcategoryRepo.EditAsync(id, subcategory);
-
-                    //if (result == "Entity not found.")
-                    //{
-                    //    return NotFound("The specified subcategory does not exist.");
-                    //}
-
-                    return Ok("SubCategory Updated Successfully");
+                    await subcategoryRepo.EditAsync(id, subcategory);
+                    return Ok(subcategory);
                 }
                 catch (DbUpdateException ex)
                 {

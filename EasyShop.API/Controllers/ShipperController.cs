@@ -139,9 +139,9 @@ namespace EasyShop.API.Controllers
                     Shipper c = await ShipperRepo.GetByIdAsync(id);
                     if (c != null)
                     {
-                        string result = await ShipperRepo.EditAsync(id, Shipper);
-                        await Console.Out.WriteLineAsync($"EditResult=>{result}");
-                        return StatusCode(200, $"This Shipper : {c.Name} is Edited");
+                        await ShipperRepo.EditAsync(id, Shipper);
+                        await Console.Out.WriteLineAsync($"EditResult=>{Shipper}");
+                        return StatusCode(200, Shipper);
                     }
                     else
                         return StatusCode(404, "This Shipper Not Found");
