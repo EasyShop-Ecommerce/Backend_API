@@ -58,7 +58,7 @@ namespace EasyShop.API.Controllers
                 ReviewsAverage = p.ReviewsAverage,
                 ReviewsCount = p.ReviewsCount,
                 DefaultImage = p.ProductImages?.FirstOrDefault()?.Image ?? null
-        })) ;
+            })) ;
         }
 
 

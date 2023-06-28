@@ -35,6 +35,6 @@ namespace EasyShop.Core.Interfaces
 
         Task<T> DeleteAsync(params int[] ids);
 
-        Task<string> UpdateAsync(T entity, params int[] ids);
+        Task<T> UpdateAsync(T entity, params int[] ids);
     }
 }

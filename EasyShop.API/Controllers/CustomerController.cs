@@ -14,7 +14,7 @@ namespace EasyShop.API.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
-    [Authorize(Roles= "customer")]
+    //[Authorize(Roles= "customer")]
     public class CustomerController : ControllerBase
 	{
 		private readonly IGenericRepository<Customer> CustomerRepo;

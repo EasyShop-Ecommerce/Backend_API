@@ -138,23 +138,23 @@ namespace EasyShop.Infrastructure.Data
             return entity;
         }
 
-        public async Task<string> UpdateAsync(T entity, params int[] ids)
+        public async Task<T> UpdateAsync(T entity, params int[] ids)
         {
-            if (ids.Length != 2)
-            {
-                return "Invalid number of IDs provided.";
-            }
+            //if (ids.Length != 2)
+            //{
+            //    return "Invalid number of IDs provided.";
+            //}
 
             T existingEntity = await Context.Set<T>().FindAsync(ids[0], ids[1]);
             if (existingEntity != null)
             {
                 Context.Entry(existingEntity).CurrentValues.SetValues(entity);
                 int rowsAffected = await Context.SaveChangesAsync();
-                return $"No. of rows affected = {rowsAffected}";
+                return entity;
             }
             else
             {
-                return "Entity not found.";
+                throw new ArgumentNullException();
             }
         }
 

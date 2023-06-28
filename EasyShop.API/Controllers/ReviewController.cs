@@ -93,7 +93,7 @@ namespace EasyShop.API.Controllers
                 //    return NotFound("The specified product review does not exist.");
                 //}
 
-                return Ok("Review Updated Successfully");
+                return Ok(review);
             }
             catch (Exception ex)
             {
