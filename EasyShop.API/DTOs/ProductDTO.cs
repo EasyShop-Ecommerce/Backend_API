@@ -21,8 +21,6 @@ namespace EasyShop.API.DTOs
 
         public string Material { get; set; }
 
-        public string MainImage { get; set; }
-
         public string OperatingSystem { get; set; }
 
         public string HardDiskSize { get; set; }
