@@ -178,31 +178,66 @@ namespace EasyShop.API.Controllers
             }
         }
 
+        //[HttpPut("{productId}/UploadImages/{color}")]
+        //public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
+        //{
+        //    if (fileCollection == null || fileCollection.Count == 0)
+        //    {
+        //        return BadRequest("No files were uploaded.");
+        //    }
+
+        //    if (string.IsNullOrEmpty(color))
+        //    {
+        //        return BadRequest("Invalid color value.");
+        //    }
+
+        //    var images = new List<ProductImage>();
+
+        //    try
+        //    {
+        //        var product = productRepo.GetProductById(productId);
+        //        if (product == null)
+        //        {
+        //            return NotFound("Product not found");
+        //        }
+        //        foreach (var file in fileCollection)
+        //        {
+
+        //            using (MemoryStream memoryStream = new MemoryStream())
+        //            {
+        //                await file.CopyToAsync(memoryStream);
+        //                var image = new ProductImage
+        //                {
+        //                    ProductId = productId,
+        //                    Color = color,
+        //                    Image = memoryStream.ToArray()
+        //                };
+        //                images.Add(image);
+        //            }
+        //        }
+
+        //        await productRepo.AddRangeAsync(images);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return StatusCode(500, "An error occurred during image upload.");
+        //    }
+
+        //    return Ok(images);
+        //}
+
         [HttpPut("{productId}/UploadImages/{color}")]
         public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
         {
-            if (fileCollection == null || fileCollection.Count == 0)
-            {
-                return BadRequest("No files were uploaded.");
-            }
-
-            if (string.IsNullOrEmpty(color))
-            {
-                return BadRequest("Invalid color value.");
-            }
-
+            int passcount = 0;
+            int errorcount = 0;
             var images = new List<ProductImage>();
 
             try
             {
-                var product = productRepo.GetProductById(productId);
-                if (product == null)
-                {
-                    return NotFound("Product not found");
-                }
                 foreach (var file in fileCollection)
                 {
-
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
                         await file.CopyToAsync(memoryStream);
@@ -213,6 +248,7 @@ namespace EasyShop.API.Controllers
                             Image = memoryStream.ToArray()
                         };
                         images.Add(image);
+                        passcount++;
                     }
                 }
 
@@ -221,13 +257,11 @@ namespace EasyShop.API.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, "An error occurred during image upload.");
+                return StatusCode(500, "An Error Occurred");
             }
 
             return Ok(images);
         }
-
-
         [HttpGet("{productId}/images/{color}")]
         public async Task<IActionResult> GetProductImages(int productId, string color)
         {
