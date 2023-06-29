@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyShop.Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230629035619_DBUpdate")]
-    partial class DBUpdate
+    [Migration("20230629113257_Db")]
+    partial class Db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
