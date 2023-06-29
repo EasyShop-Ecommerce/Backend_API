@@ -9,6 +9,14 @@ namespace EasyShop.Core.Specifications
 {
     public class GetOrderWithDetails:BaseSpecification<Order>
     {
+        public GetOrderWithDetails()
+        {
+            AddIncludes(o => o.Customer);
+            AddIncludes(o => o.Status);
+            AddIncludes(o => o.PaymentMethod);
+            AddIncludes(o => o.Product);
+            AddIncludes(o => o.Seller);
+        }
         public GetOrderWithDetails(int id):base(o=>o.Id==id)
         {
             AddIncludes(o => o.Customer);
@@ -16,8 +24,6 @@ namespace EasyShop.Core.Specifications
             AddIncludes(o => o.PaymentMethod);
             AddIncludes(o => o.Product);
             AddIncludes(o => o.Seller);
-
-
         }
     }
 }

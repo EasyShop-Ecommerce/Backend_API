@@ -8,5 +8,8 @@ namespace EasyShop.API.DTOs
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+        public string Token { get; set; }
+        public DateTime Expiration {get; set; }
+        public string name { get; set; }
     }
 }

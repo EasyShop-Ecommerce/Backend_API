@@ -143,7 +143,7 @@ namespace EasyShop.API.Controllers
 
                     if (rowsAffected > 0)
                     {
-                        return Ok("Product Updated Successfully");
+                        return Ok(product);
                     }
                     else
                     {
@@ -164,8 +164,8 @@ namespace EasyShop.API.Controllers
         {
             try
             {
-                int rowsDeleted = await productRepo.DeleteProduct(id);
-                return Ok($"{rowsDeleted} row(s) deleted successfully.");
+                await productRepo.DeleteProduct(id);
+                return Ok();
             }
             catch (ArgumentException ex)
             {
@@ -227,6 +227,7 @@ namespace EasyShop.API.Controllers
         //    return Ok(images);
         //}
 
+
         [HttpPut("{productId}/UploadImages/{color}")]
         public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
         {
@@ -266,25 +267,8 @@ namespace EasyShop.API.Controllers
         public async Task<IActionResult> GetProductImages(int productId, string color)
         {
             List<string> imagesUrls = new List<string>();
-
-            if (productId <= 0)
-            {
-                return BadRequest("Invalid productId");
-            }
-
-            if (string.IsNullOrEmpty(color))
-            {
-                return BadRequest("Color parameter is required");
-            }
-
             try
             {
-                var product = await productRepo.GetProductById(productId);
-                if (product == null)
-                {
-                    return NotFound("Product not found");
-                }
-
                 var productImages = productRepo.GetProductImages(productId, color);
 
                 if (productImages != null && productImages.Count > 0)
@@ -296,16 +280,61 @@ namespace EasyShop.API.Controllers
                 }
                 else
                 {
-                    return NotFound("No images found for the specified product and color");
+                    return NotFound();
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, "An Error Occurred");
             }
-
             return Ok(imagesUrls);
         }
+
+
+        //[HttpGet("{productId}/images/{color}")]
+        //public async Task<IActionResult> GetProductImages(int productId, string color)
+        //{
+        //    List<string> imagesUrls = new List<string>();
+
+        //    if (productId <= 0)
+        //    {
+        //        return BadRequest("Invalid productId");
+        //    }
+
+        //    if (string.IsNullOrEmpty(color))
+        //    {
+        //        return BadRequest("Color parameter is required");
+        //    }
+
+        //    try
+        //    {
+        //        var product = await productRepo.GetProductById(productId);
+        //        if (product == null)
+        //        {
+        //            return NotFound("Product not found");
+        //        }
+
+        //        var productImages = productRepo.GetProductImages(productId, color);
+
+        //        if (productImages != null && productImages.Count > 0)
+        //        {
+        //            productImages.ForEach(item =>
+        //            {
+        //                imagesUrls.Add(Convert.ToBase64String(item.Image));
+        //            });
+        //        }
+        //        else
+        //        {
+        //            return NotFound("No images found for the specified product and color");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+
+        //    return Ok(imagesUrls);
+        //}
 
 
         [NonAction]
