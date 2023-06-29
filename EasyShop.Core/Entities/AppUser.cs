@@ -23,6 +23,8 @@ namespace EasyShop.Core.Identity
         public string MiddleName { get; set; }
         public string LastName { get; set; }
 
+        public string Token { get; set; }
+
 
         [ForeignKey("customer")]
         public int? CustomerID { get; set; }

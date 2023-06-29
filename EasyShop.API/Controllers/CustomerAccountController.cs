@@ -1,15 +1,18 @@
-﻿using EasyShop.API.DTOs;
+﻿using Bogus.DataSets;
+using EasyShop.API.DTOs;
 using EasyShop.Core.Entities;
 using EasyShop.Core.Identity;
 using EasyShop.Core.Interfaces;
 using EasyShop.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Claims;
 using System.Text;
 
@@ -36,18 +39,8 @@ namespace EasyShop.API.Controllers
         {
             if(ModelState.IsValid)
             {
-                var customer = new Customer()
-                {
-                    Name = registerDTO.Name,
-                    Phone = registerDTO.Phone,
-                    Email = registerDTO.Email,
-                    City = registerDTO.City,
-                    Government = registerDTO.Government,
-                    Street = registerDTO.Street,
-                };
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
-
+                var customer = new Customer();
+               
                 AppUser user = new AppUser();
                 user.UserName = registerDTO.Name;
                 user.Phone= registerDTO.Phone;
@@ -55,9 +48,20 @@ namespace EasyShop.API.Controllers
                 user.Street = registerDTO.Street;
                 user.City = registerDTO.City;
                 user.Government = registerDTO.Government;
-                user.CustomerID = customer.Id;
                 user.SellerID = null;
                 var result= await _userManager.CreateAsync(user,registerDTO.Password);
+
+                customer.Name = registerDTO.Name;
+                customer.Phone = registerDTO.Phone;
+                customer.Email = registerDTO.Email;
+                customer.City = registerDTO.City;
+                customer.Government = registerDTO.Government;
+                customer.Street = registerDTO.Street;
+                customer.Password= registerDTO.Password;
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+
+                user.CustomerID = customer.Id;
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "customer");
@@ -106,15 +110,15 @@ namespace EasyShop.API.Controllers
                             expires:DateTime.Now.AddHours(2),
                             signingCredentials:credentials
                             );
-                        RefreshToken refreshToken = new RefreshToken
-                        {
-                            Token = new JwtSecurityTokenHandler().WriteToken(Token),
-                            Expiration = Token.ValidTo,
-                            UserId= user.Id
-                        };
+                        var token = new JwtSecurityTokenHandler().WriteToken(Token);
+                        user.Token= token;
+                        loginDTO.Token =token ;
+                        loginDTO.Expiration = Token.ValidTo;
+                        loginDTO.name = user.UserName;    
+                       
                         
 
-                        return Ok(refreshToken) ;
+                        return Ok(loginDTO) ;
                     }
                     return Unauthorized("UnAuthorized Customer");    
                 }
@@ -125,6 +129,25 @@ namespace EasyShop.API.Controllers
                 return Unauthorized("UnAuthorized Customer");
         }
 
+
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<ActionResult<LoginDTO>> GetCurrentUser()
+        {
+            var currentUser = User;
+            // Get the user's email claim
+            var userEmail = currentUser.FindFirst(ClaimTypes.Email)?.Value;
+
+            // Get the user's identity
+            var userIdentity = await _userManager.FindByEmailAsync(userEmail);
+            return new LoginDTO()
+            {
+                Email = userIdentity.Email,
+                name = userIdentity.UserName,
+                Token = userIdentity.Token
+            };
+        }
+       
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -142,4 +165,5 @@ namespace EasyShop.API.Controllers
         }
 
     }
+
 }
