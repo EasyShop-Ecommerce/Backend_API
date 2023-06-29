@@ -11,6 +11,7 @@ namespace EasyShop.Core.Entities
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
         public decimal Price { get; set; }
 
+
         [ForeignKey("Product")]
 		public int ProductId { get; set; }
 		public virtual Product Product { get; set; }

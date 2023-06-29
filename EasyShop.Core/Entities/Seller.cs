@@ -34,12 +34,13 @@ namespace EasyShop.Core.Entities
         public string Street { get; set; }
 		[Required]
 		public string City { get; set; } = string.Empty;
-		public string Governorate { get; set; } 
+		public string Governorate { get; set; }
 
-        public virtual ICollection<ProductSeller> ProductSellers { get; set; } = new HashSet<ProductSeller>();
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
+        //public virtual ICollection<ProductSeller> ProductSellers { get; set; } = new HashSet<ProductSeller>();
         //public ICollection<StoreProduct> StoreProducts { get; set; }= new List<StoreProduct>();
     }
 

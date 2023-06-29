@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EasyShop.API.DTOs
 {
-    public class ProductWithCategoryAndReviewsDTO
+    public class ProductDTO
     {
         public int Id { get; set; }
 
@@ -15,11 +15,11 @@ namespace EasyShop.API.DTOs
 
         public decimal Price { get; set; }
 
+        public int Qty { get; set; }
+
         public string Description { get; set; }
 
         public string Material { get; set; }
-
-        public string MainImage { get; set; }
 
         public string OperatingSystem { get; set; }
 
@@ -41,9 +41,11 @@ namespace EasyShop.API.DTOs
 
         public double ReviewsAverage { get; set; }
 
-        public List<ProductSellersDTO> Sellers { get; set; }=new List<ProductSellersDTO>();
+        //public List<ProductSellersDTO> Sellers { get; set; }=new List<ProductSellersDTO>();
 
         public int? ShipperId { get; set; }
+
+        public int SellerId { get; set; }
 
         public string DefaultImage { get;set; }
     }

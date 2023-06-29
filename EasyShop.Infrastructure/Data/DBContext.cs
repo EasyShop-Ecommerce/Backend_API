@@ -42,15 +42,15 @@ namespace EasyShop.Infrastructure.Data
 
 		public DbSet<Order> Orders { get; set; }
 
-		public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
-		public DbSet<Review> Reviews { get; set; }
+        //public DbSet<OrderDetail> OrderDetails { get; set; }
 
-		//public DbSet<Store> Stores { get; set; }
+        //public DbSet<Store> Stores { get; set; }
 
-		public DbSet<ProductSeller> ProductSellers { get; set; }
+        //public DbSet<ProductSeller> ProductSellers { get; set; }
 
-		public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -71,12 +71,17 @@ namespace EasyShop.Infrastructure.Data
 			modelBuilder.Entity<Review>()
 						.HasKey(r => new { r.ProductId, r.CustomerId });
 
-			modelBuilder.Entity<OrderDetail>()
-						.HasKey(o => new { o.OrderId, o.ProductId });
+            //modelBuilder.Entity<OrderDetail>()
+            //			.HasKey(o => new { o.OrderId, o.ProductId });
 
-			modelBuilder.Entity<ProductSeller>()
-					    .HasKey(s => new { s.ProductId, s.SellerId});
-          
+            //modelBuilder.Entity<ProductSeller>()
+            //		    .HasKey(s => new { s.ProductId, s.SellerId});
+
+            //modelBuilder.Entity<Order>()
+            //            .HasOne(o => o.Seller)
+            //            .WithMany()
+            //            .HasForeignKey(o => o.SellerId)
+            //            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Category>()
                         .HasIndex(s => s.CategoryName)
@@ -85,9 +90,6 @@ namespace EasyShop.Infrastructure.Data
             modelBuilder.Entity<SubCategory>()
                         .HasIndex(s => s.SubCategoryName)
                         .IsUnique();
-
-          
-
 
         }
     }

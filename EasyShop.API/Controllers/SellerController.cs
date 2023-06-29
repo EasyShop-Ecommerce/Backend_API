@@ -13,7 +13,7 @@ namespace EasyShop.API.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
-    [Authorize(Roles = "seller")]
+    //[Authorize(Roles = "seller")]
     public class SellerController : ControllerBase
 	{
 		private readonly IGenericRepository<Seller> SellerRepo;
@@ -58,11 +58,10 @@ namespace EasyShop.API.Controllers
                     Street = Seller.Street,
                     City = Seller.City,
                     Governorate = Seller.Governorate
-
                 };
-                foreach (var product in Seller.ProductSellers)
+                foreach (var product in Seller.Products)
                 {
-                    SellerDTO.SellerProducts.Add(new ProductSellersDTO { ProductId=product.ProductId,Price=product.Price,ProductQuantity=product.Quantity});
+                    SellerDTO.SellerProductsIds.Add(product.Id);
                 }
                 foreach (var order in Seller.Orders)
                 {
@@ -76,7 +75,10 @@ namespace EasyShop.API.Controllers
                 //{
                 //    SellerDTO.StoreProducts.Add(store.Quantity);
                 //}
-
+                //foreach (var product in Seller.ProductSellers)
+                //{
+                //    SellerDTO.SellerProducts.Add(new ProductSellersDTO { ProductId = product.ProductId, Price = product.Price, ProductQuantity = product.Quantity });
+                //}
                 SellerDTOs.Add(SellerDTO);
             }
 
@@ -107,9 +109,9 @@ namespace EasyShop.API.Controllers
                 Governorate = Seller.Governorate,
 
             };
-            foreach (var product in Seller.ProductSellers)
+            foreach (var product in Seller.Products)
             {
-                SellerDTO.SellerProducts.Add(new ProductSellersDTO { ProductId = product.ProductId, Price = product.Price, ProductQuantity = product.Quantity });
+                SellerDTO.SellerProductsIds.Add(product.Id);
             }
             foreach (var order in Seller.Orders)
             {
@@ -123,7 +125,10 @@ namespace EasyShop.API.Controllers
             //{
             //    SellerDTO.StoreProducts.Add(store.Quantity);
             //}
-
+            //foreach (var product in Seller.ProductSellers)
+            //{
+            //    SellerDTO.SellerProducts.Add(new ProductSellersDTO { ProductId = product.ProductId, Price = product.Price, ProductQuantity = product.Quantity });
+            //}
 
             return Ok(SellerDTO);
         }

@@ -11,10 +11,18 @@ namespace EasyShop.Core.Entities
 
 		public string BrandName { get; set; }
 
-		[Required(ErrorMessage ="Please Give Title to the product")]
+        public string Code { get; set; }
+
+        [Required(ErrorMessage ="Please Give Title to the product")]
 		public string Title { get; set; }
 
 		public string Description { get; set; }
+
+        public int AvailableQuantity { get; set; }
+
+        [Required(ErrorMessage = "Please Provide Price to the product")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
+        public decimal Price { get; set; }
 
         public string Material { get; set; }
 
@@ -34,13 +42,19 @@ namespace EasyShop.Core.Entities
         public int? ShipperId { get; set; }
         public virtual Shipper Shipper { get; set; }
 
+        [ForeignKey("Seller")]
+        public int SellerId { get; set; }
+        public virtual Seller Seller { get; set; }
+
         public virtual ICollection<ProductImage> ProductImages { get; set; }=new HashSet<ProductImage>();
 
-        public virtual ICollection<ProductSeller> ProductSellers { get; set; } =new HashSet<ProductSeller>();
-
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-
         public virtual ICollection<Review> Reviews { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
+
+        //public virtual ICollection<ProductSeller> ProductSellers { get; set; } =new HashSet<ProductSeller>();
+
+        // public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
         public double ReviewsAverage
         {

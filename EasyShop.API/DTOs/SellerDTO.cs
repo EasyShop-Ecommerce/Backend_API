@@ -19,7 +19,8 @@ namespace EasyShop.API.DTOs
         public string Governorate { get; set; }
         //public List<string> Products { get; set; }= new List<string>();
         //public List<int> StoreProducts { get; set; }=new List<int>();
-        public List<ProductSellersDTO> SellerProducts { get; set; }=new List<ProductSellersDTO>();
+        //public List<ProductSellersDTO> SellerProducts { get; set; }=new List<ProductSellersDTO>();
+        public List<int> SellerProductsIds { get; set; } = new List<int>();
         public List<DateTime> OrdersDate { get; set; } = new List<DateTime>();
         public List<decimal> OrdersPrice { get; set; } = new List<decimal>();
 

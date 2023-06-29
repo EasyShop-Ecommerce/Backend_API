@@ -9,6 +9,7 @@ namespace EasyShop.Core.Enums
     public enum StatusMethod:int
     {
         processed=1,
+        intransit,
         shipped,
         cancelled
     }

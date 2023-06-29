@@ -24,7 +24,7 @@ namespace EasyShop.Infrastructure.Data
 				                .Include(p => p.SubCategory)
 								.ThenInclude(p => p.Category)
 								.Include(p=>p.Reviews)
-                                .Include(p => p.ProductSellers)
+                                //.Include(p => p.ProductSellers)
                                 .Include(p => p.ProductImages)
                                 .Include(p=>p.Shipper)
                                 .ToListAsync();
@@ -36,7 +36,7 @@ namespace EasyShop.Infrastructure.Data
 								.Include(p=>p.SubCategory)
 								.ThenInclude(p => p.Category)
 								.Include(p => p.Reviews)
-								.Include(p=>p.ProductSellers)
+								//.Include(p=>p.ProductSellers)
 								.Include(p=>p.ProductImages)
                                 .Include(p => p.Shipper)
                                 .SingleOrDefaultAsync(p => p.Id == id);
