@@ -14,7 +14,7 @@ namespace EasyShop.Core.Entities
 		
 		public bool? IsDefault { get; set; }
 
-		public string ImagePath { get; set; }
+		//public string ImagePath { get; set; }
 
 		[ForeignKey("Product")]
 		public int ProductId { get; set; }

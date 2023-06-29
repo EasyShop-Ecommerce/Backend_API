@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyShop.Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230628142709_edit")]
-    partial class edit
+    [Migration("20230629035619_DBUpdate")]
+    partial class DBUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,7 +131,13 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<int>("PaymentMethodId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SellerId")
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SellerId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ShipPrice")
@@ -143,38 +149,22 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("PaymentMethodId");
 
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("SellerId");
 
                     b.HasIndex("StatusId");
 
                     b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("EasyShop.Core.Entities.OrderDetail", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("OrderId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("EasyShop.Core.Entities.PaymentMethod", b =>
@@ -202,7 +192,13 @@ namespace EasyShop.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AvailableQuantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("BrandName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -220,6 +216,12 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<string>("OperatingSystem")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SellerId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ShipperId")
                         .HasColumnType("int");
 
@@ -234,6 +236,8 @@ namespace EasyShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
 
                     b.HasIndex("ShipperId");
 
@@ -257,9 +261,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool?>("IsDefault")
                         .HasColumnType("bit");
 
@@ -271,27 +272,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("EasyShop.Core.Entities.ProductSeller", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SellerId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "SellerId");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("ProductSellers");
                 });
 
             modelBuilder.Entity("EasyShop.Core.Entities.RefreshToken", b =>
@@ -694,11 +674,15 @@ namespace EasyShop.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyShop.Core.Entities.Seller", "Seller")
+                    b.HasOne("EasyShop.Core.Entities.Product", "Product")
                         .WithMany("Orders")
-                        .HasForeignKey("SellerId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("EasyShop.Core.Entities.Seller", "Seller")
+                        .WithMany("Orders")
+                        .HasForeignKey("SellerId");
 
                     b.HasOne("EasyShop.Core.Entities.Status", "Status")
                         .WithMany("Orders")
@@ -710,32 +694,21 @@ namespace EasyShop.Infrastructure.Migrations
 
                     b.Navigation("PaymentMethod");
 
+                    b.Navigation("Product");
+
                     b.Navigation("Seller");
 
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("EasyShop.Core.Entities.OrderDetail", b =>
-                {
-                    b.HasOne("EasyShop.Core.Entities.Order", "Order")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EasyShop.Core.Entities.Product", "Product")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("EasyShop.Core.Entities.Product", b =>
                 {
+                    b.HasOne("EasyShop.Core.Entities.Seller", "Seller")
+                        .WithMany("Products")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EasyShop.Core.Entities.Shipper", "Shipper")
                         .WithMany("Products")
                         .HasForeignKey("ShipperId");
@@ -745,6 +718,8 @@ namespace EasyShop.Infrastructure.Migrations
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Seller");
 
                     b.Navigation("Shipper");
 
@@ -760,25 +735,6 @@ namespace EasyShop.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("EasyShop.Core.Entities.ProductSeller", b =>
-                {
-                    b.HasOne("EasyShop.Core.Entities.Product", "Product")
-                        .WithMany("ProductSellers")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EasyShop.Core.Entities.Seller", "Seller")
-                        .WithMany("ProductSellers")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("EasyShop.Core.Entities.RefreshToken", b =>
@@ -851,11 +807,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("EasyShop.Core.Entities.Order", b =>
-                {
-                    b.Navigation("OrderDetails");
-                });
-
             modelBuilder.Entity("EasyShop.Core.Entities.PaymentMethod", b =>
                 {
                     b.Navigation("Orders");
@@ -863,11 +814,9 @@ namespace EasyShop.Infrastructure.Migrations
 
             modelBuilder.Entity("EasyShop.Core.Entities.Product", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("Orders");
 
                     b.Navigation("ProductImages");
-
-                    b.Navigation("ProductSellers");
 
                     b.Navigation("Reviews");
                 });
@@ -876,7 +825,7 @@ namespace EasyShop.Infrastructure.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("ProductSellers");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("EasyShop.Core.Entities.Shipper", b =>

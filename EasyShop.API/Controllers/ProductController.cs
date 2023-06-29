@@ -29,13 +29,14 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductWithCategoryAndReviewsDTO>>> GetAllProducts()
+        public async Task<ActionResult<List<ProductDTO>>> GetAllProducts()
         {
             IReadOnlyList<Product> products = await productRepo.GetAllProducts();
-            return Ok(products.Select(p => new ProductWithCategoryAndReviewsDTO()
+            return Ok(products.Select(p => new ProductDTO()
             {
                 Id = p.Id,
                 BrandName = p.BrandName,
+                Code=p.Code,
                 Description = p.Description,
                 Title = p.Title,
                 //Price = p.Price,
@@ -48,13 +49,14 @@ namespace EasyShop.API.Controllers
                 Category = p.SubCategory != null ? p.SubCategory.Category?.CategoryName : null,
                 CategoryId = p.SubCategory != null ? p.SubCategory.Category?.Id : null,
                 ShipperId = p.ShipperId,
-                Sellers = p.ProductSellers != null ? p.ProductSellers.Select(ps => new ProductSellersDTO
-                {
-                    ProductId = ps.ProductId,
-                    SellerId = ps.SellerId,
-                    ProductQuantity = ps.Quantity,
-                    Price = ps.Price,
-                }).ToList() : null,
+                SellerId = p.SellerId,
+                //Sellers = p.ProductSellers != null ? p.ProductSellers.Select(ps => new ProductSellersDTO
+                //{
+                //    ProductId = ps.ProductId,
+                //    SellerId = ps.SellerId,
+                //    ProductQuantity = ps.Quantity,
+                //    Price = ps.Price,
+                //}).ToList() : null,
                 ReviewsAverage = p.ReviewsAverage,
                 ReviewsCount = p.ReviewsCount,
                 DefaultImage = p.ProductImages?.FirstOrDefault()?.Image != null
@@ -64,7 +66,7 @@ namespace EasyShop.API.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetOneProductRoute")]
-        public async Task<ActionResult<ProductWithCategoryAndReviewsDTO>> GetProduct(int id)
+        public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
             //var spec = new GetProductWithReviews(id);
             Product productToReturn = await productRepo.GetProductById(id);
@@ -72,10 +74,11 @@ namespace EasyShop.API.Controllers
             {
                 return NotFound();
             }
-            ProductWithCategoryAndReviewsDTO product = new ProductWithCategoryAndReviewsDTO()
+            ProductDTO product = new ProductDTO()
             {
                 Id = productToReturn.Id,
                 BrandName = productToReturn.BrandName,
+                Code=productToReturn.Code,
                 Description = productToReturn.Description,
                 Title = productToReturn.Title,
                 //Price = productToReturn.Price,
@@ -88,13 +91,15 @@ namespace EasyShop.API.Controllers
                 SubCategoryId = productToReturn.SubCategoryId,
                 Category = productToReturn.SubCategory != null ? productToReturn.SubCategory.Category?.CategoryName : null,
                 CategoryId = productToReturn.SubCategory != null ? productToReturn.SubCategory.Category?.Id : null,
-                Sellers = productToReturn.ProductSellers != null ? productToReturn.ProductSellers.Select(ps => new ProductSellersDTO
-                {
-                    ProductId=id,
-                    SellerId = ps.SellerId,
-                    ProductQuantity = ps.Quantity,
-                    Price = ps.Price,
-                }).ToList() : null,
+                //Sellers = productToReturn.ProductSellers != null ? productToReturn.ProductSellers.Select(ps => new ProductSellersDTO
+                //{
+                //    ProductId=id,
+                //    SellerId = ps.SellerId,
+                //    ProductQuantity = ps.Quantity,
+                //    Price = ps.Price,
+                //}).ToList() : null,
+                ShipperId=productToReturn.ShipperId,
+                SellerId=productToReturn.SellerId,
                 ReviewsAverage = productToReturn.ReviewsAverage,
                 ReviewsCount = productToReturn.ReviewsCount,
                 DefaultImage = productToReturn.ProductImages?.FirstOrDefault()?.Image != null
@@ -174,14 +179,28 @@ namespace EasyShop.API.Controllers
         [HttpPut("{productId}/UploadImages/{color}")]
         public async Task<IActionResult> UploadImages(IFormFileCollection fileCollection, int productId, string color)
         {
-            int passcount = 0;
-            int errorcount = 0;
+            if (fileCollection == null || fileCollection.Count == 0)
+            {
+                return BadRequest("No files were uploaded.");
+            }
+
+            if (string.IsNullOrEmpty(color))
+            {
+                return BadRequest("Invalid color value.");
+            }
+
             var images = new List<ProductImage>();
 
             try
             {
+                var product = productRepo.GetProductById(productId);
+                if (product == null)
+                {
+                    return NotFound("Product not found");
+                }
                 foreach (var file in fileCollection)
                 {
+
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
                         await file.CopyToAsync(memoryStream);
@@ -192,7 +211,6 @@ namespace EasyShop.API.Controllers
                             Image = memoryStream.ToArray()
                         };
                         images.Add(image);
-                        passcount++;
                     }
                 }
 
@@ -201,18 +219,36 @@ namespace EasyShop.API.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, "An Error Occurred");
+                return StatusCode(500, "An error occurred during image upload.");
             }
 
             return Ok(images);
         }
 
+
         [HttpGet("{productId}/images/{color}")]
         public async Task<IActionResult> GetProductImages(int productId, string color)
         {
             List<string> imagesUrls = new List<string>();
+
+            if (productId <= 0)
+            {
+                return BadRequest("Invalid productId");
+            }
+
+            if (string.IsNullOrEmpty(color))
+            {
+                return BadRequest("Color parameter is required");
+            }
+
             try
             {
+                var product = await productRepo.GetProductById(productId);
+                if (product == null)
+                {
+                    return NotFound("Product not found");
+                }
+
                 var productImages = productRepo.GetProductImages(productId, color);
 
                 if (productImages != null && productImages.Count > 0)
@@ -224,15 +260,17 @@ namespace EasyShop.API.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound("No images found for the specified product and color");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An Error Occurred");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+
             return Ok(imagesUrls);
         }
+
 
         [NonAction]
         private string GetFilePath(int productId)

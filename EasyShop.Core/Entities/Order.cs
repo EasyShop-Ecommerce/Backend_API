@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyShop.Core.Entities
 {
@@ -6,7 +7,13 @@ namespace EasyShop.Core.Entities
 	{
 		public int Id { get; set; }
 
-		public decimal TotalPrice { get; set; }
+        [Required]
+        public decimal UnitPrice { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
+
+        public decimal TotalPrice { get; set; }
 
 		public decimal ShipPrice { get; set; }
 
@@ -24,15 +31,19 @@ namespace EasyShop.Core.Entities
 		public int PaymentMethodId { get; set; }
 		public virtual PaymentMethod PaymentMethod { get; set; }
 
-		//[ForeignKey("Shipper")]
-		//public int ShipperId { get; set; }
-		//public virtual Shipper Shipper { get; set; }
+        [ForeignKey("Product")]
+        public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
 
-		[ForeignKey("Seller")]
-		public int SellerId { get; set; }
-		public virtual Seller Seller { get; set; }
+        [ForeignKey("Seller")]
+        public int? SellerId { get; set; }
+        public virtual Seller Seller { get; set; }
 
-		public virtual ICollection<OrderDetail> OrderDetails { get; set; }= new List<OrderDetail>();
-	}
+        //[ForeignKey("Shipper")]
+        //public int ShipperId { get; set; }
+        //public virtual Shipper Shipper { get; set; }
+
+        //public virtual ICollection<OrderDetail> OrderDetails { get; set; }= new List<OrderDetail>();
+    }
 
 }
