@@ -143,7 +143,7 @@ namespace EasyShop.API.Controllers
 
                     if (rowsAffected > 0)
                     {
-                        return Ok("Product Updated Successfully");
+                        return Ok(product);
                     }
                     else
                     {
@@ -164,8 +164,8 @@ namespace EasyShop.API.Controllers
         {
             try
             {
-                int rowsDeleted = await productRepo.DeleteProduct(id);
-                return Ok($"{rowsDeleted} row(s) deleted successfully.");
+                await productRepo.DeleteProduct(id);
+                return Ok();
             }
             catch (ArgumentException ex)
             {
