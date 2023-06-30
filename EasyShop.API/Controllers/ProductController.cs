@@ -263,8 +263,6 @@ namespace EasyShop.API.Controllers
 
             return Ok(images);
         }
-
-
         [HttpGet("{productId}/images/{color}")]
         public async Task<IActionResult> GetProductImages(int productId, string color)
         {
