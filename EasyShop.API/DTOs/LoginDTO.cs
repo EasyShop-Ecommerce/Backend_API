@@ -4,6 +4,7 @@ namespace EasyShop.API.DTOs
 {
     public class LoginDTO
     {
+        public int? CustomerId { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]

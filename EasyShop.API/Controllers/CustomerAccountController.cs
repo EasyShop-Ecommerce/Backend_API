@@ -111,10 +111,12 @@ namespace EasyShop.API.Controllers
                             signingCredentials:credentials
                             );
                         var token = new JwtSecurityTokenHandler().WriteToken(Token);
+                        loginDTO.CustomerId = user.CustomerID;
                         user.Token= token;
                         loginDTO.Token =token ;
                         loginDTO.Expiration = Token.ValidTo;
-                        loginDTO.name = user.UserName;    
+                        loginDTO.name = user.UserName;
+                        loginDTO.CustomerId = user.CustomerID;
                        
                         
 
