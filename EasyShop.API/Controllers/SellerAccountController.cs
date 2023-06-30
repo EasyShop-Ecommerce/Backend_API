@@ -34,20 +34,8 @@ namespace EasyShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var seller = new Seller()
-                {
-                    FirstName = registerDTO.FirstName,
-                    MiddleName= registerDTO.MiddleName,
-                    LastName = registerDTO.LastName,
-                    Phone = registerDTO.Phone,
-                    Email = registerDTO.Email,
-                    BusinessName=registerDTO.BusinessName,
-                    City = registerDTO.City,
-                    Governorate = registerDTO.Government,
-                    Street = registerDTO.Street,
-                };
-                _context.Sellers.Add(seller);
-                await _context.SaveChangesAsync();
+                var seller = new Seller();
+
 
                 AppUser user = new AppUser();
                 user.UserName = registerDTO.FirstName;
@@ -59,8 +47,22 @@ namespace EasyShop.API.Controllers
                 user.Street = registerDTO.Street;
                 user.City = registerDTO.City;
                 user.Government = registerDTO.Government;
-                user.SellerID = seller.Id;
                 user.CustomerID = null;
+
+                seller.FirstName = registerDTO.FirstName;
+                seller.MiddleName = registerDTO.MiddleName;
+                seller.LastName = registerDTO.LastName;
+                seller.Phone = registerDTO.Phone;
+                seller.Email = registerDTO.Email;
+                seller.BusinessName = registerDTO.BusinessName;
+                seller.City = registerDTO.City;
+                seller.Governorate = registerDTO.Government;
+                seller.Street = registerDTO.Street;
+                seller.Password = registerDTO.Password;
+                _context.Sellers.Add(seller);
+                await _context.SaveChangesAsync();
+
+                user.SellerID = seller.Id;
                 var result = await _userManager.CreateAsync(user, registerDTO.Password);
                 if (result.Succeeded)
                 {
@@ -83,6 +85,7 @@ namespace EasyShop.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDTO loginDTO)
@@ -114,11 +117,14 @@ namespace EasyShop.API.Controllers
                             expires: DateTime.Now.AddHours(2),
                             signingCredentials: credentials
                             );
-                        return Ok(new
-                        {
-                            token = new JwtSecurityTokenHandler().WriteToken(Token),
-                            expiration = Token.ValidTo
-                        });
+                        var token = new JwtSecurityTokenHandler().WriteToken(Token);
+                        user.Token = token;
+                        loginDTO.Token = token;
+                        loginDTO.Expiration = Token.ValidTo;
+                        loginDTO.name = user.UserName;
+                        loginDTO.sellerId = user.SellerID;
+
+                        return Ok(loginDTO);
                     }
                     return Unauthorized("UnAuthorized Seller");
                 }
